@@ -14,6 +14,10 @@ class CategoryAdmin(admin.ModelAdmin):
     pass
 
 
+class AisleAdmin(admin.ModelAdmin):
+    pass
+
+
 class ProductAdmin(admin.ModelAdmin):
     pass
 
@@ -33,6 +37,7 @@ class OrderProductAdmin(admin.ModelAdmin):
 admin.site.register(models.Provider, ProviderAdmin)
 admin.site.register(models.Consumer, ProviderAdmin)
 admin.site.register(models.Category, CategoryAdmin)
+admin.site.register(models.Aisle, AisleAdmin)
 admin.site.register(models.Product, ProductAdmin)
 admin.site.register(models.Store, StoreAdmin)
 admin.site.register(models.Order, OrderAdmin)
