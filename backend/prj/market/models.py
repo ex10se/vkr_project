@@ -40,10 +40,22 @@ class Category(models.Model):
         verbose_name_plural = 'categories'
 
 
+class Aisle(models.Model):
+    name = models.CharField(max_length=250, default='')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'aisle'
+        verbose_name_plural = 'aisles'
+
+
 class Product(models.Model):
     name = models.CharField(max_length=250, default='')
     image = models.ImageField(upload_to='product', null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    aisle = models.ForeignKey(Aisle, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} ({self.category})'
