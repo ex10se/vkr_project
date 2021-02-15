@@ -1,57 +1,51 @@
 # reCommendme - быстрая доставка продуктов
-### (Windows 10)
+#### (Windows 10)
 ## Подготовка
-`git clone https://github.com/ex10se/vkr_project.git`
+    git clone https://github.com/ex10se/vkr_project.git
+    cd vkr_project
+    virtualenv -p python venv
+    cd venv/Scripts
+    activate.bat
+    cd ../..
+    pip install -r requirements.txt
+    django-admin startproject prj  
+    cd prj
+    python manage.py migrate
+    python manage.py createsuperuser
+    python manage.py runserver
 
-`cd vkr_project`
+    python manage.py startapp market
 
-`virtualenv -p python venv`
-
-`cd venv/Scripts`
-
-`activate.bat`
-
-`cd ../..`
-
-`pip install -r requirements.txt`
-
-django-admin startproject prj  
-
-`cd prj`
-
-`python manage.py migrate`
-
-`python manage.py createsuperuser`
-
-`python manage.py runserver`
-
-python manage.py startapp market
-Apps: 'market',
+Apps: 'market',  
 Заполнил модели в market/models.py
-python manage.py makemigrations
-python manage.py migrate
+
+    python manage.py makemigrations
+    python manage.py migrate
+
 Регистрация моделей в market/admin.py
 
 
 ### Диграмма классов (UML)
-pip install pyparsing pydot django-extensions
+    pip install pyparsing pydot django-extensions
+
 Apps: 'django_extensions'
-python manage.py graph_models -a > my_project.dot
+
+    python manage.py graph_models -a > my_project.dot
 Засунуть содержимое .dot в https://dotuml.com/playground.html 
-(либо установить https://graphviz.org/download/ >
+(либо установить https://graphviz.org/download/ и затем
 dot -T png my_project.dot -o my_project.png)
 
 ### Импорт данных
 Заполнил market/management/commands/load_from_products_csv.py
 python manage.py load_from_products_csv
 
-### swagger (drf-yasg)
-позволяет создавать rest api, документацию, систему для тестирования, 
+## swagger (drf-yasg)
+Позволяет создавать rest api, документацию, систему для тестирования, 
 проверка endpoints
 
 Apps: 'drf_yasg',
 
-#### Создание API 
+## Создание API 
 market/views/category.py
 Роуты в prj/urls.py
 Serializers - классы, описывающие входные и выходные данные, их структуру
@@ -59,7 +53,7 @@ Viewsets - содержит спец. классы (generic). Один созд�
 несколько представлений
 Permissions - права доступа к endpoint (url)
 
-### Channels
+## Channels
 Расширяет возможности django, накладывая поверх http WebSockets 
 для поддержания постоянного соединения между клиентом и сервером 
 и реагирования на клиенте на события сервера и наоборот, 
@@ -73,7 +67,7 @@ market/routing.py
 prj/asgi.py
 index.html
 
-#### Список товаров
+## Список товаров
 market/product.py
 Постраничный вывод: settings > REST_FRAMEWORK
 Сериализаторы для вывода категорий и подкатегорий
@@ -89,3 +83,21 @@ market/category(aisle).py и зарегистрированы в роутере 
 
 в результате я не стал сохранять изображения на компьюьтере, потому что их вышло бы почти 50000 штук
 изображения берутся напрямую из ebay
+
+## Angular ssr (server-side rendering). Http-запросы
+Установка https://www.jetbrains.com/help/webstorm/angular.html
+
+    cd frontend
+    ng new ng-prj
+    cd ng-prj
+    ng serve
+Исходный код проекта Angular находится в src/app
+Добавляем библиотеку flex-layout https://github.com/angular/flex-layout
+
+    npm i -s @angular/flex-layout @angular/cdk
+
+    
+
+
+ython manage.py runserver
+python manage.py parse_img_products
