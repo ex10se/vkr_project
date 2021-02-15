@@ -37,20 +37,46 @@ python manage.py migrate
 pip install pyparsing pydot django-extensions
 Apps: 'django_extensions'
 python manage.py graph_models -a > my_project.dot
-Засунуть содержимое .dot в https://dotuml.com/playground.html (либо установить https://graphviz.org/download/ > dot -T png my_project.dot -o my_project.png)
+Засунуть содержимое .dot в https://dotuml.com/playground.html 
+(либо установить https://graphviz.org/download/ >
+dot -T png my_project.dot -o my_project.png)
 
 ### Импорт данных
 Заполнил market/management/commands/load_from_products_csv.py
 python manage.py load_from_products_csv
 
 ### swagger (drf-yasg)
-позволяет создавать rest api, документацию, систему для тестирования, проверка endpoints
+позволяет создавать rest api, документацию, систему для тестирования, 
+проверка endpoints
 
 Apps: 'drf_yasg',
 
 #### Создание API 
 market/views/category.py
+Роуты в prj/urls.py
 Serializers - классы, описывающие входные и выходные данные, их структуру
-Viewsets - содержит спец. классы (generic). Один созданные класс будет содержать несколько представлений
+Viewsets - содержит спец. классы (generic). Один созданные класс будет содержать 
+несколько представлений
 Permissions - права доступа к endpoint (url)
+
+### Channels
+Расширяет возможности django, накладывая поверх http WebSockets 
+для поддержания постоянного соединения между клиентом и сервером 
+и реагирования на клиенте на события сервера и наоборот, 
+передавания сообщений в дуплексе от сервера клиенту и наоборот
+
+(Инфу из видео https://youtu.be/HHzWDXjE5To 
+переделывал по инструкции
+https://channels.readthedocs.io/en/stable/tutorial/part_2.html)
+market/consumers.py
+market/routing.py
+prj/asgi.py
+index.html
+
+#### Список товаров
+market/product.py
+Постраничный вывод: settings > REST_FRAMEWORK
+Сериализаторы для вывода категорий и подкатегорий
+при запросе списка товаров находятся рядом с вьюсетами: 
+market/category(aisle).py и зарегистрированы в роутере prj/urls.py
 

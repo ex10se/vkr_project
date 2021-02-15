@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'drf_yasg',
+    'channels',
     'market',
 ]
 
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'prj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,6 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'prj.wsgi.application'
+ASGI_APPLICATION = 'prj.asgi.application'
 
 
 # Database
@@ -122,3 +124,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DATA_DIR = BASE_DIR / '../init_data'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10
+}
