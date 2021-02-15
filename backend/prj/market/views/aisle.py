@@ -1,12 +1,15 @@
 from rest_framework import serializers, viewsets, permissions
 
 from market.models import Aisle
+from market.views.category import CategorySerializer
 
 
 class AisleSerializer(serializers.HyperlinkedModelSerializer):
+    category = CategorySerializer()
+
     class Meta:
         model = Aisle
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'category']
 
 
 class AisleViewSet(viewsets.ModelViewSet):

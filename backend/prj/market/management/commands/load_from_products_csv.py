@@ -12,13 +12,14 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
+        input('Are you sure you want to flush the database?')
         print('Flushing db tables')
         Category.objects.all().delete()
+        Aisle.objects.all().delete()
         Product.objects.all().delete()
 
-        print(f'Start importing from {DATA_DIR}\\products.csv...')
-
         df = pd.read_csv(DATA_DIR / 'products.csv')
+        print(f'Start importing from {DATA_DIR}\\products.csv...')
         for index, row in df.iterrows():
             if not Category.objects.filter(name=row['department']):
                 category = Category()
@@ -29,6 +30,7 @@ class Command(BaseCommand):
             if not Aisle.objects.filter(name=row['aisle']):
                 aisle = Aisle()
                 aisle.id = row['aisle_id']
+                aisle.category_id = row['department_id']
                 aisle.name = row['aisle']
                 aisle.save()
 

@@ -9,15 +9,17 @@ from market.models import Product
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
     aisle = AisleSerializer()
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'category', 'aisle']
+        fields = ['id', 'name', 'aisle']
 
 
 class ProductListView(ListModelMixin, GenericAPIView):
+    """
+        API endpoint для списка продуктов
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 

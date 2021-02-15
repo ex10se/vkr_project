@@ -15,11 +15,15 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class AisleAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'category')
+    search_fields = ['id', 'name']
+    list_filter = ('category',)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'aisle', 'image_tag')
+    search_fields = ['id', 'name']
+    list_filter = ('aisle',)
 
 
 class StoreAdmin(admin.ModelAdmin):

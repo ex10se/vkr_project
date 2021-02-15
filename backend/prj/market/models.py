@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 
 
 class Provider(User):
@@ -42,9 +43,10 @@ class Category(models.Model):
 
 class Aisle(models.Model):
     name = models.CharField(max_length=250, default='')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} ({self.category})'
 
     class Meta:
         verbose_name = 'aisle'
@@ -53,16 +55,25 @@ class Aisle(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=250, default='')
-    image = models.ImageField(upload_to='product', null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    # image = models.ImageField(upload_to='product', null=True, blank=True)
+    image = models.URLField(null=True, blank=True)
     aisle = models.ForeignKey(Aisle, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.name} ({self.category})'
+        return f'{self.name} ({self.aisle.category})'
+
+    @property
+    def image_tag(self):
+        # проверка существования image.url, оборачивание его в тег
+        try:
+            return mark_safe(f'<img src="{self.image}" style="width: 100px; height: 100px; object-fit: cover;">')
+        except ValueError:
+            return None
 
     class Meta:
         verbose_name = 'product'
         verbose_name_plural = 'products'
+        ordering = ('-id',)
 
 
 class Store(models.Model):

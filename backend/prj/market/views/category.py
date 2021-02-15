@@ -1,5 +1,4 @@
 from rest_framework import serializers, viewsets, permissions
-from rest_framework.decorators import action
 
 from market.models import Category
 
@@ -18,7 +17,3 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
     http_method_names = ['get', 'post']  # ['get', 'post','put', 'patch', 'delete']
-
-    @action(detail=False, methods=['post'])
-    def set_password(self, request, pk=None):
-        pass
