@@ -1,19 +1,10 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils.safestring import mark_safe
+from image_cropping.fields import ImageRatioField, ImageCropField
+from easy_thumbnails.files import get_thumbnailer
 
-
-class Provider(User):
-    name = models.CharField(max_length=250, default='')
-    phone = models.CharField(max_length=250, default='')
-    rating = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'provider'
-        verbose_name_plural = 'providers'
+from prj.settings import BACKEND_URL
 
 
 class Consumer(User):
@@ -31,7 +22,8 @@ class Consumer(User):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=250, default='')
+    name = models.CharField(max_length=250, default='', unique=True)
+    image = models.ImageField(upload_to='category', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -40,35 +32,61 @@ class Category(models.Model):
         verbose_name = 'category'
         verbose_name_plural = 'categories'
 
+    @property
+    def image_tag(self):
+        # проверка существования image.url, оборачивание его в тег (для админки)
+        try:
+            return mark_safe(
+                f'<img src="{self.image.url}" style="width: 100px; height: 100px; object-fit: cover;">')
+        except ValueError:
+            return None
 
-class Aisle(models.Model):
-    name = models.CharField(max_length=250, default='')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    @property
+    def image_url(self):
+        return BACKEND_URL + self.image.url
+
+
+class Subcategory(models.Model):
+    name = models.CharField(max_length=250, default='', unique=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.name} ({self.category})'
+        return self.name
 
     class Meta:
-        verbose_name = 'aisle'
-        verbose_name_plural = 'aisles'
+        verbose_name = 'subcategory'
+        verbose_name_plural = 'subcategories'
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=250, default='')
-    # image = models.ImageField(upload_to='product', null=True, blank=True)
-    image = models.URLField(null=True, blank=True)
-    aisle = models.ForeignKey(Aisle, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=250, default='', unique=True)
+    image = ImageCropField(upload_to='product', null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='subcategory')
+    cropping = ImageRatioField('image', '150x150')
 
     def __str__(self):
-        return f'{self.name} ({self.aisle.category})'
+        return f'{self.name} ({int(Store.objects.get(product=self.id).price)} ₽)'
 
     @property
     def image_tag(self):
-        # проверка существования image.url, оборачивание его в тег
         try:
-            return mark_safe(f'<img src="{self.image}" style="width: 100px; height: 100px; object-fit: cover;">')
+            return mark_safe(f'<img src="{self.image.url}">')
         except ValueError:
             return None
+
+    @property
+    def get_small_image(self):
+        return mark_safe(f'<img src="{self.get_small_image_url}">')
+
+    @property
+    def get_small_image_url(self):
+        return BACKEND_URL + get_thumbnailer(self.image).get_thumbnail({
+            'size': (100, 100),
+            'box': self.cropping,
+            'crop': 'smart',
+        }).url
 
     class Meta:
         verbose_name = 'product'
@@ -76,8 +94,20 @@ class Product(models.Model):
         ordering = ('-id',)
 
 
+# class Provider(models.Model):
+#     name = models.CharField(max_length=250, default='', unique=True)
+#     rating = models.IntegerField(default=0)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         verbose_name = 'provider'
+#         verbose_name_plural = 'providers'
+
+
 class Store(models.Model):
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, null=True, blank=True)
+    # provider = models.ForeignKey(Provider, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
 
@@ -85,9 +115,12 @@ class Store(models.Model):
         verbose_name = 'store'
         verbose_name_plural = 'stores'
 
+    @property
+    def product_price(self):
+        return self.price
+
 
 class Order(models.Model):
-
     STATUS = (
         ('new', 'new order'),
         ('pending', 'pending order'),

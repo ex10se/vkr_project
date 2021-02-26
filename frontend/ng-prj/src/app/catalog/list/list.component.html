@@ -1,0 +1,22 @@
+<div id="app-center" fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="center">
+  <mat-card class="example-card" *ngFor="let product of products" fxFlex="300px" fxLayout="column wrap"
+            fxLayoutAlign="center">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image">
+        <img class="cat-img" src="{{ product.category.image_url }}" alt="{{ product.category.name }}">
+      </div>
+      <mat-card-title>{{ product.name }}</mat-card-title>
+      <mat-card-subtitle class="category-title">{{ product.category.name }}</mat-card-subtitle>
+      <mat-card-subtitle class="subcategory-title">{{ product.subcategory.name  }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <a><img mat-card-image src="{{ product.get_small_image_url }}"
+           alt="{{ product.name }}"></a>
+      <span id="description">Описание<br>Цена</span>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>Выбор количества</button>
+      <button mat-button (click)="doAddToBasket(product.id)">В корзину</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -70,22 +70,26 @@ index.html
 ## Список товаров
 market/product.py
 Постраничный вывод: settings > REST_FRAMEWORK
-Сериализаторы для вывода категорий и подкатегорий
+Сериализаторы для вывода категорий
 при запросе списка товаров находятся рядом с вьюсетами: 
-market/category(aisle).py и зарегистрированы в роутере prj/urls.py
+market/category.py и зарегистрированы в роутере prj/urls.py
 
 в market/models.py в Product появилась функция image_tag, которая будет помогать выводить изображение в админке
 для этого в соответствующем классе market/admin.py нужно добавить атрибут list_display
 
-парсинг изображений продуктов с помощью команды parse_img_products
-используется requests для отправки запроса на получение страницы
-и beautiful soup 4 для обработки html-кода и поиска в нем картинок
+                        Парсинг изображений продуктов с помощью команды parse_img_products
+                        используется requests для отправки запроса на получение страницы
+                        и beautiful soup 4 для обработки html-кода и поиска в нем картинок
 
-в результате я не стал сохранять изображения на компьюьтере, потому что их вышло бы почти 50000 штук
-изображения берутся напрямую из ebay
+парсинг продуктов и категорий www.delikateska.ru
 
-## Angular ssr (server-side rendering). Http-запросы
-Установка https://www.jetbrains.com/help/webstorm/angular.html
+## Angular
+Установка  
+https://www.jetbrains.com/help/webstorm/angular.html  
+https://angular.io/guide/setup-local  
+Установить Node.js, затем:
+
+    npm install -g @angular/cli
 
     cd frontend
     ng new ng-prj
@@ -96,8 +100,62 @@ market/category(aisle).py и зарегистрированы в роутере 
 
     npm i -s @angular/flex-layout @angular/cdk
 
-    
+Импорт в app.module.ts  
+Написание кода страницы в файлах app.component  
+Глобальные стили в styles.scss  
+
+Добавляем https://material.angular.io/  
+
+    ng add @angular/material
+
+### Angular ssr (server-side rendering)
+По умолчанию исходный код angular-страницы почти пустой, 
+а пользователям нужно каждый раз ждать прогрузки ангуляра.
+Server-side rendering позволяет решить проблему.
+https://angular.io/guide/universal  
+Запускается bin/ssr.bat  
+
+SSR очень важно устанавливать с самого начала.
+
+## Http-запросы
+https://angular.io/guide/http
+
+Сервер django/swagger не позволяет слать http-запросы другим серверам
+(другим сайтам, т.е. серверу angular).  
+Для решения нужно поставить и настроить
+https://pypi.org/project/django-cors-headers/  
+
+## Каталог продуктов и роутинг
+    ng g m catalog
+-создает модуль каталог
+
+    ng g c catalog/list
+-создает компонент list в модуле каталог
+
+    ng g m basket
+    ng g c basket/list
+    ng g m profile
+    ng g c profile/edit
+Роуты прописываются в app-routing.module.ts
+
+Переносим содержимое app в catalog/list
+
+    ng g s api
+Создаем сервис api, выносим getProductList() в api.service.ts
+
+## Категории товаров
+Добавляем getCategoryList в app.component
+
+## Корзина
+    ng g s basket
+Создаем сервис Basket  
+Знаком $ заканчивают названия объектов, на которые можно подписаться (basket$)  
+В tslint.json добавил возможность переменным начинаться с подчеркивания ("variable-name": "options": "allow-leading-underscore")  
+
+Корзина пропадает при F5 -> 
+сделать ее хранение в session storage или local storage  
++ Сделать удаление из корзины
 
 
-ython manage.py runserver
-python manage.py parse_img_products
+ng serve
+python manage.py runserver

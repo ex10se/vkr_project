@@ -6,7 +6,6 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
 
-from market.views.aisle import AisleViewSet
 from market.views.category import CategoryViewSet
 from market.views.index import index
 
@@ -28,11 +27,13 @@ schema_view = get_schema_view(
 
 router = routers.DefaultRouter()
 router.register(r'category', CategoryViewSet)
-router.register(r'aisle', AisleViewSet)
 
 urlpatterns = [
-    path('', index),
     path('admin/', admin.site.urls),
+    path('', index),
+    path('catalog', index),
+    path('catalog/add', index),
+    path('profile/notify', index),
     path('v1/', include([
         path('generic/', include(router.urls)),
         path('market/', include('market.urls')),

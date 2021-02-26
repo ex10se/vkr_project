@@ -1,12 +1,16 @@
-from rest_framework import serializers, viewsets, permissions
+from rest_framework import viewsets, permissions
+from rest_framework.generics import ListAPIView
 
 from market.models import Category
+from market.serializers.category import CategorySerializer
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name']
+class CategoryListView(ListAPIView):
+    serializer_class = CategorySerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return Category.objects.all().order_by('-id')
 
 
 class CategoryViewSet(viewsets.ModelViewSet):

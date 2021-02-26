@@ -1,27 +1,18 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
-from rest_framework import serializers
 
-from market.views.aisle import AisleSerializer
-from market.views.category import CategorySerializer
-
+from market.filters import ProductFilter
 from market.models import Product
-
-
-class ProductSerializer(serializers.ModelSerializer):
-    aisle = AisleSerializer()
-
-    class Meta:
-        model = Product
-        fields = ['id', 'name', 'image', 'aisle']
+from market.serializers.product import ProductSerializer
 
 
 class ProductListView(ListModelMixin, GenericAPIView):
     """
         API endpoint для списка продуктов
     """
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('-id')
     serializer_class = ProductSerializer
+    filterset_class = ProductFilter
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

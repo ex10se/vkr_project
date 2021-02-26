@@ -1,0 +1,87 @@
+#app-center {
+  padding: 10px 0 0 10px;
+  min-height: 720px;
+}
+
+#title-text {
+  font-size: 30px;
+}
+
+#description {
+  width: 120px;
+  text-align: end;
+}
+
+mat-card {
+  margin-top: 10px;
+  border: 1px solid transparent;
+}
+
+mat-card-header {
+  height: 75px;
+}
+
+mat-card-title, mat-card-subtitle {
+  width: 185px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+mat-card-title {
+  font-size: 14px !important;
+}
+
+mat-card-subtitle.category-title, mat-card-subtitle.subcategory-title {
+  font-size: 12px !important;
+  text-align: right;
+}
+
+mat-card-subtitle.category-title{
+  margin-bottom: 7px;
+}
+
+mat-card-subtitle.subcategory-title {
+  font-weight: 100;
+}
+
+mat-card:hover {
+  mat-card-title {
+    white-space: normal;
+  }
+
+  mat-card-subtitle.category-title {
+    display: none;
+  }
+
+  border: 1px solid #3F51B5;
+}
+
+// category image
+.example-header-image {
+  width: 50px;
+  text-align: center;
+}
+
+.cat-img {
+  width: 100%;
+}
+
+// product image
+.mat-card-image {
+  max-height: 100px;
+  max-width: 100px;
+  margin: 0 !important;
+}
+
+.mat-card-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+mat-card-actions {
+  margin: 0 !important;
+  display: flex;
+  place-content: space-around;
+}
