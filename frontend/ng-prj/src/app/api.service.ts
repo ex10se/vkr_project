@@ -28,4 +28,12 @@ export class ApiService {
     const data = {ids: pars};
     return this.http.post(`${environment.backendUrl}v1/market/basket_list/`, data);
   }
+
+  loginByGoogle(data: any): any {
+    return this.http.post(`${environment.backendUrl}v1/market/google_auth`, data);
+  }
+
+  init(): any {
+    return this.http.get(`${environment.backendUrl}v1/market/init`);
+  }
 }

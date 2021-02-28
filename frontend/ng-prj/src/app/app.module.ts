@@ -15,13 +15,25 @@ import {MatCardModule} from '@angular/material/card';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatBadgeModule} from '@angular/material/badge';
-import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 import {ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BasketService} from './basket.service';
+import {LayoutModule} from '@angular/cdk/layout';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+import {MatGridListModule} from '@angular/material/grid-list';
 
+import {GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule} from 'angularx-social-login';
+import {LoginService} from './login.service';
+
+import {AuthInterceptorService} from './auth-interceptor.service';
+
+export const interceptorProviders = [
+  {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
+];
 
 @NgModule({
   declarations: [
@@ -42,10 +54,34 @@ import {BasketService} from './basket.service';
     MatMenuModule,
     MatIconModule,
     MatBadgeModule,
-    MatSidenavModule,
     MatButtonToggleModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatGridListModule,
+    SocialLoginModule,
   ],
-  providers: [BasketService],
+  providers: [
+    BasketService,
+    LoginService,
+    AuthInterceptorService,
+    interceptorProviders,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '1006137623360-702sli4kq5e8v4fiq4p536fdsq5qb1hq.apps.googleusercontent.com'
+            )
+          }
+        ]
+      } as SocialAuthServiceConfig,
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

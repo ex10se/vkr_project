@@ -1,14 +1,15 @@
 from django.contrib import admin
 
 from . import models
+from .models import UserProfile
 
 
-# class ProviderAdmin(admin.ModelAdmin):
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ['name', 'username']
+
+
+# class ConsumerAdmin(admin.ModelAdmin):
 #     pass
-
-
-class ConsumerAdmin(admin.ModelAdmin):
-    pass
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -41,8 +42,8 @@ class OrderProductAdmin(admin.ModelAdmin):
     pass
 
 
-# admin.site.register(models.Provider, ProviderAdmin)
-admin.site.register(models.Consumer, ConsumerAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)
+# admin.site.register(models.Consumer, ConsumerAdmin)
 admin.site.register(models.Category, CategoryAdmin)
 admin.site.register(models.Subcategory, SubcategoryAdmin)
 admin.site.register(models.Product, ProductAdmin)

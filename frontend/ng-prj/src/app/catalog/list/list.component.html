@@ -11,11 +11,13 @@
     </mat-card-header>
     <mat-card-content>
       <a><img mat-card-image src="{{ product.get_small_image_url }}"
-           alt="{{ product.name }}"></a>
+              alt="{{ product.name }}"></a>
       <span id="description">Описание<br>Цена</span>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button>Выбор количества</button>
+      <!--      TODO выбор количества -->
+      <!--  TODO категория и подкатегория продукта - ссылки -->
+      <!--  TODO фотография продукта - модалка с инфой о нем и крупной фоткой -->
       <button mat-button (click)="doAddToBasket(product.id)">В корзину</button>
     </mat-card-actions>
   </mat-card>

@@ -156,6 +156,53 @@ https://pypi.org/project/django-cors-headers/
 сделать ее хранение в session storage или local storage  
 + Сделать удаление из корзины
 
+Чиню корзину отсюда https://stackblitz.com/edit/localstorage-stackoverflow  
+
+## Дружим ангуляр с джанго
+То есть повесить ангуляр на index.html джанго   
+ng build собирает проект в папку dist  
+В angular.json в build находятся настройки сборщика  
+В нем меняем "outputPath": "../../backend/prj/static/angular", добавляем deployURL  
+Нужно использовать другой сборщик, удобный для джанго:
+
+    npm install @angular-builders/custom-webpack@8.1.0 --save
+    npm install @angular-devkit/build-angular@0.803.24 --save
+    npm install --save-dev webpack-bundle-tracker@0.4.3
+    
+Custom-webpack позволяет задавать дополнительные опции для сборки  
+webpack-bundle-tracker "выплевывает" статистику компиляции 
+в отдельный файл, который будет использован джанго, 
+чтобы найти скрипты для включения их в страницу, 
+потому что при каждой сборке их имена будут меняться  
+
+Создаем файл с настройками билдера django-webpack.config.js
+https://github.com/owais/django-webpack-loader
+
+ng build --watch обновляет изменения исходников сервера 
+в реальном времени 
+
+## Авторизация через гугл
+Добавляем приложение rest_framework.authtoken  
+Добавляем google_auth
+
+    npm i -s angularx-social-login@2.1.1
+Устанавливаем на фронтенде 
+
+## Авторизация по токену
+Нужна чтоб оставалась авторизация и после обновления страницы.
+Создаем InitView
+
+    ng g s login
+    ng g s auth-interceptor
+Interceptor будет вешать на все запросы заголовок с токеном авторизации.
+
+
+
+
+
+
+Для мобильного приложения на ангуляре можно Ionic
 
 ng serve
 python manage.py runserver
+

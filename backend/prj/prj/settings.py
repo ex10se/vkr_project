@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'eq9@1e6mgw+!6*@ze*8ll^9&&dcx^j8gn+u+-4v92xyc+^s#1y'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'image_cropping',
     'corsheaders',
     'rest_framework.authtoken',
+    'webpack_loader',
     'market',
 ]
 
@@ -82,7 +83,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'assets'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -106,5 +110,16 @@ BACKEND_URL = 'http://127.0.0.1:8000'
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'angular/',
+        'STATS_FILE': BASE_DIR / 'static/webpack-stats-angular.json',
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
     }
 }

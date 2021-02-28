@@ -7,18 +7,30 @@ from easy_thumbnails.files import get_thumbnailer
 from prj.settings import BACKEND_URL
 
 
-class Consumer(User):
+class UserProfile(User):
     name = models.CharField(max_length=250, default='')
     phone = models.CharField(max_length=250, default='')
-    address = models.TextField(default='')
-    geo_location = models.CharField(max_length=250, default='')
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = 'consumer'
-        verbose_name_plural = 'consumers'
+        verbose_name = 'UserProfile'
+        verbose_name_plural = 'UserProfile'
+
+
+# class Consumer(User):
+#     name = models.CharField(max_length=250, default='')
+#     phone = models.CharField(max_length=250, default='')
+#     address = models.TextField(default='')
+#     geo_location = models.CharField(max_length=250, default='')
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         verbose_name = 'consumer'
+#         verbose_name_plural = 'consumers'
 
 
 class Category(models.Model):
@@ -127,7 +139,7 @@ class Order(models.Model):
         ('finished', 'finished order'),
     )
 
-    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE, null=True, blank=True)
+    consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     status = models.CharField(max_length=20, default='new', choices=STATUS)
