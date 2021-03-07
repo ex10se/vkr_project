@@ -23,6 +23,7 @@ describe('AppComponent', () => {
   it(`should have as title 'ng-prj'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
+    // @ts-ignore
     expect(app.title).toEqual('ng-prj');
   });
 

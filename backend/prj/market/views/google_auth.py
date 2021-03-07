@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from market.models import UserProfile
 from market.serializers.google_auth import GoogleAuthRequestSerializer
-from market.serializers.user_serializer import UserProfileSerializer
+from market.serializers.user_profile import UserProfileSerializer
 
 
 class GoogleView(APIView):
@@ -15,11 +15,8 @@ class GoogleView(APIView):
     """
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(
-        request_body=GoogleAuthRequestSerializer
-    )
+    @swagger_auto_schema(request_body=GoogleAuthRequestSerializer)
     def post(self, request):
-        print(request.data)
         try:
             user = UserProfile.objects.get(username=request.data['email'])
             token = Token.objects.get(user=user)
@@ -28,11 +25,9 @@ class GoogleView(APIView):
             user.name = request.data['firstName']
             user.username = request.data['email']
             user.is_active = True
-            user.set_password('123')
-            user.set_password('auth1auth2')
+            user.set_password(None)
             user.save()
             token = Token.objects.create(user=user)
-
         return Response({
             'token': token.key,
             'agent': request.META['HTTP_USER_AGENT'],

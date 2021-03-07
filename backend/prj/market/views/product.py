@@ -10,7 +10,7 @@ class ProductListView(ListModelMixin, GenericAPIView):
     """
         API endpoint для списка продуктов
     """
-    queryset = Product.objects.all().order_by('-id')
+    queryset = Product.objects.all().order_by('id')  # по возрастанию
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
 

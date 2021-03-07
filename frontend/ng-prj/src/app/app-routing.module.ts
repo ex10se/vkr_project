@@ -18,7 +18,11 @@ const routes: Routes = [
   {
     path: 'catalog',
     loadChildren: () => import('./catalog/catalog.module').then(m => m.CatalogModule),
-  }
+  },
+  {
+    path: '**',
+    redirectTo: '/'
+  },
 ];
 
 @NgModule({

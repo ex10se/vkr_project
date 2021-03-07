@@ -15,13 +15,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ListComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatButtonModule,
-    MatCardModule,
-    FlexLayoutModule
-  ]
+    declarations: [ListComponent],
+    exports: [
+        ListComponent
+    ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatButtonModule,
+        MatCardModule,
+        FlexLayoutModule
+    ]
 })
 export class BasketModule {}

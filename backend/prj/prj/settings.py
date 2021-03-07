@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'webpack_loader',
-    'market',
+    'market.apps.MarketConfig',
 ]
 
 MIDDLEWARE = [
@@ -115,11 +115,11 @@ CHANNEL_LAYERS = {
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'CACHE': not DEBUG,
+        # 'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': 'angular/',
         'STATS_FILE': BASE_DIR / 'static/webpack-stats-angular.json',
-        'POLL_INTERVAL': 0.1,
-        'TIMEOUT': None,
-        'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
+        # 'POLL_INTERVAL': 0.1,
+        # 'TIMEOUT': None,
+        # 'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
     }
 }

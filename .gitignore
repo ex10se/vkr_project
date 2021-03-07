@@ -7,3 +7,4 @@ package-lock.json
 .idea
 backend/prj/db.sqlite3
 /backend/prj/media/
+/backend/prj/static/angular/

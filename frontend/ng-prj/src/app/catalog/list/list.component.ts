@@ -1,8 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ApiService} from '../../api.service';
 import {BasketService} from '../../basket.service';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {ViewportScroller} from '@angular/common';
+import {LoginService} from '../../login.service';
 
 
 @Component({
@@ -10,36 +13,108 @@ import {BasketService} from '../../basket.service';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit {
-  products: any;
-
+export class ListComponent implements OnInit, AfterViewInit {
 
   constructor(private http: HttpClient,
               private apiService: ApiService,
               private route: ActivatedRoute,
-              private basketService: BasketService) {
+              private basketService: BasketService,
+              private router: Router,
+              private scroll: ViewportScroller,
+              private loginService: LoginService) {
     this.route.params.subscribe(params => {
       if (params.hasOwnProperty('catId')) {
-        this.getProductList({cat: params.catId});
+        this.doGetProductList({cat: params.catId}, this.limit, this.offset);
+        this.currentState = 'cat';
+        this.param = params.catId;
       } else if (params.hasOwnProperty('SubCatId')) {
-        this.getProductList({subcat: params.SubCatId});
+        this.doGetProductList({subcat: params.SubCatId}, this.limit, this.offset);
+        this.currentState = 'subcat';
+        this.param = params.SubcatId;
       } else {
-        this.getProductList({});
+        this.doGetProductList({}, this.limit, this.offset);
+        this.currentState = 'all';
+        this.param = '';
       }
-
     });
+    this.loginService.isAuth$.subscribe((data: any) => {
+      this.isAuth = data;
+    });
+    this.apiService.init().subscribe((data: any) => {
+      this.user = data.user.id;
+      this.apiService.getUserRatings(this.user).subscribe((res: any) => {
+        this.userRatings = res;
+      });
+    });
+
+  }
+
+  isAuth = false;
+  user = 0;
+  pageYoffset = 0;
+  @ViewChild(MatPaginator) paginator: MatPaginator | any;
+  products: Array<any> = [];
+  productsCount?: number;
+  limit = 50;
+  offset = 0;
+  pageEvent: any;
+  lowValue = 0;
+  highValue = 50;
+  currentState = '';
+  param = '';
+  userRatings: any;
+
+  @HostListener('window:scroll', ['$event']) onScroll(event: PageEvent): void {
+    this.pageYoffset = window.pageYOffset;
   }
 
   ngOnInit(): void {
   }
 
-  getProductList(pars: any): void {
-    this.apiService.getProductList(pars).subscribe((res: any) => {
-      this.products = res.results;
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(
+      (event: any) => {
+        if (this.currentState === 'cat') {
+          this.doGetProductList({cat: this.param}, event.pageSize, this.lowValue);
+        } else if (this.currentState === 'subcat') {
+          this.doGetProductList({subcat: this.param}, event.pageSize, this.lowValue);
+        } else {
+          this.doGetProductList({}, event.pageSize, this.lowValue);
+        }
+      }
+    );
+  }
+
+  getPaginatorData(event: PageEvent): PageEvent {
+    this.lowValue = event.pageIndex * event.pageSize;
+    this.highValue = this.lowValue + event.pageSize;
+    return event;
+  }
+
+  doGetProductList(pars: any, limit: number, offset: number): void {
+    this.apiService.getProductList(pars, limit, offset).subscribe((res: any) => {
+      if (res.results.length > 0) {
+        this.products = res.results;
+        this.productsCount = res.count;
+      } else {
+        this.router.navigate(['/'], {replaceUrl: true}).then();
+      }
     });
   }
 
-  doAddToBasket(id: number): void {
-    this.basketService.addToBasket(id);
+  doSetProductRating(user: number, product: number, rating: number): void {
+    this.apiService.setProductRating(user, product, rating).subscribe(() => {
+    });
   }
+
+  doAddToBasket(id: any): void {
+    if (!this.basketService.isInBasket(id)) {
+      this.basketService.addToBasket(id);
+    }
+  }
+
+  scrollToTop(): void {
+    this.scroll.scrollToPosition([0, 0]);
+  }
+
 }

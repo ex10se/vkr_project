@@ -1,24 +1,74 @@
-<div id="app-center" fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="center">
-  <mat-card class="example-card" *ngFor="let product of products" fxFlex="300px" fxLayout="column wrap"
-            fxLayoutAlign="center">
-    <mat-card-header>
-      <div mat-card-avatar class="example-header-image">
-        <img class="cat-img" src="{{ product.category.image_url }}" alt="{{ product.category.name }}">
-      </div>
-      <mat-card-title>{{ product.name }}</mat-card-title>
-      <mat-card-subtitle class="category-title">{{ product.category.name }}</mat-card-subtitle>
-      <mat-card-subtitle class="subcategory-title">{{ product.subcategory.name  }}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <a><img mat-card-image src="{{ product.get_small_image_url }}"
-              alt="{{ product.name }}"></a>
-      <span id="description">Описание<br>Цена</span>
-    </mat-card-content>
-    <mat-card-actions>
-      <!--      TODO выбор количества -->
-      <!--  TODO категория и подкатегория продукта - ссылки -->
-      <!--  TODO фотография продукта - модалка с инфой о нем и крупной фоткой -->
-      <button mat-button (click)="doAddToBasket(product.id)">В корзину</button>
-    </mat-card-actions>
-  </mat-card>
+<div id="app-center" fxFlex="100" fxLayoutAlign="center" fxLayout="row wrap">
+
+  <div fxFlex="70" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
+    <mat-card class="example-card" *ngFor="let product of products; let i=index"
+              fxFlex="300px" fxLayout="column wrap"
+              fxLayoutAlign="center">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image">
+          <a href="#" [routerLink]="['/catalog/cat/',product['category']['id']]">
+            <img class="cat-img" src="{{ product['category']['image_url'] }}"
+                 [alt]="product['category']['name']" [title]="product['category']['name']">
+          </a>
+        </div>
+        <mat-card-title>{{ product['name'] }}</mat-card-title>
+        <mat-card-subtitle class="category-title">
+          <button mat-flat-button
+                  [routerLink]="['/catalog/cat/',product['category']['id']]">{{ product['category']['name'] }}</button>
+        </mat-card-subtitle>
+        <mat-card-subtitle class="subcategory-title">
+          <button mat-flat-button
+                  [routerLink]="['/catalog/subcat/',product['subcategory']['id']]">{{ product['subcategory']['name'] }}</button>
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <!--  TODO фотография продукта - модалка с инфой о нем и крупной фоткой -->
+        <a [routerLink]="'#'"><img mat-card-image [src]="product['get_small_image_url']"
+                                   [alt]="product['name']"></a>
+        <div id="description">
+          <!-- Временное решение: TODO описание продукта -->
+          <span>{{product['id']}} {{ product['name'].slice(0, product['name'].indexOf(' ')) }}</span>
+
+          <span *ngIf="!isAuth">
+            <ngb-rating [(rate)]="product['get_common_rating']" [max]="5" [readonly]=true>
+              <ng-template let-fill="fill">
+                <span class="star" [class.full]="fill === 100">
+                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                </span>
+              </ng-template>
+            </ngb-rating>
+          </span>
+
+          <span *ngIf="isAuth">{{product['get_common_rating']}}
+            <ngb-rating [rate]="product['get_common_rating']" [max]="5" [readonly]=false>
+<!--                        (rateChange)="doSetProductRating(user, product['id'], )">-->
+              <ng-template let-fill="fill">
+                <span class="star" [class.full]="fill === 100">
+                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                </span>
+              </ng-template>
+            </ngb-rating>
+          </span>
+
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <!--  TODO анимация загрузки товаров -->
+        <!--  TODO поиск товара -->
+        <button class="price" mat-stroked-button disabled>{{product['get_price']}} ₽</button>
+        <button class="count" mat-stroked-button><!-- TODO выбор количества -->1 шт</button>
+        <button mat-raised-button color="accent" (click)="doAddToBasket(product['id'])">В корзину</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div fxFlex="100" fxLayoutAlign="end center">
+    <button mat-raised-button (click)="scrollToTop()" color="warn">Наверх</button>
+    <mat-paginator [length]="productsCount"
+                   [pageSize]="limit"
+                   [showFirstLastButtons]=true
+                   (page)="pageEvent = getPaginatorData($event)">
+    </mat-paginator>
+  </div>
+
 </div>

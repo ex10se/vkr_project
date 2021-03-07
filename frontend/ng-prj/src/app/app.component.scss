@@ -1,6 +1,7 @@
 #app-header {
   border-bottom: 1px solid #3F51B5;
   padding: 0 10px 0 10px;
+  margin-bottom: 20px;
 }
 
 #logo {
@@ -14,8 +15,6 @@
 
 #app-footer {
   border-top: 1px solid #606db7;
-  margin-top: 20px;
-  text-align: center;
 }
 
 router-outlet {
@@ -42,3 +41,4 @@ mat-button-toggle {
 .mat-button-toggle-checked {
   color: #fff;
 }
+

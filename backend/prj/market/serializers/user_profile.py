@@ -5,4 +5,4 @@ from market.models import UserProfile
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['id', 'username', 'name']
+        fields = ('id', 'username', 'first_name', 'last_name', 'phone', 'email')

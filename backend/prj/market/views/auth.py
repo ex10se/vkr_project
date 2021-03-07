@@ -1,19 +1,12 @@
-from abc import ABC
-
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import serializers
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 
-
-class CommonResponseSerializer(serializers.Serializer):
-    status = serializers.IntegerField()
-    message = serializers.CharField()
-
-
-class LoginRequestSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
+from market.models import UserProfile
+from market.serializers.auth import LoginRequestSerializer
+from market.serializers.user_profile import UserProfileSerializer
 
 
 class AuthView(APIView):
@@ -21,12 +14,15 @@ class AuthView(APIView):
         Авторизация пользователя.
     """
 
-    @swagger_auto_schema(
-        request_body=LoginRequestSerializer,
-        responses={200: CommonResponseSerializer}
-    )
+    @swagger_auto_schema(request_body=LoginRequestSerializer)
     def post(self, request):
-        return Response(CommonResponseSerializer({
-            'status': 0,
-            'message': 'Good'
-        }).data)
+        try:
+            user = UserProfile.objects.get(username=request.data['email'])
+            token = Token.objects.get(user=user)
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({
+            'token': token.key,
+            'agent': request.META['HTTP_USER_AGENT'],
+            'user': UserProfileSerializer(user).data
+        })

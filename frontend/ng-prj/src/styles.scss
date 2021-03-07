@@ -3,15 +3,13 @@
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 html, body {
-  height: 100%;
-  background-color: #e3e2ff;
+  background-color: #e3e2ff !important;
   color: black;
-}
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  scroll-behavior: smooth;
 }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';

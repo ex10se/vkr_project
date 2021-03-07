@@ -1,25 +1,30 @@
-<div id="app-content" fxLayout="column">
+<div id="app-content" fxLayout="column" fxFlexFill>
   <div id="app-header" fxFlex="60px" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-    <img id="logo" src="static/angular/assets/images/logo.png" alt="logo">
+    <a href="#" [routerLink]="'catalog'"><img id="logo" src="static/angular/assets/images/logo.png" alt="logo"></a>
     <div fxLayout="row" fxFlex="100" fxLayoutAlign="end center" fxLayoutGap="10px">
-      {{ basket | json }}
+
       <button mat-raised-button [routerLink]="'basket'" color="primary" *ngIf="basket.length > 0"
               matBadge="{{ basket.length }}" matBadgePosition="before" matBadgeColor="accent">
-        <mat-icon>add_shopping_cart</mat-icon>
+        <fa-icon [icon]="faCartPlus"></fa-icon>
         Корзина
       </button>
-      <!--      <button mat-raised-button [routerLink]="'profile'" color="warn">Профиль</button>-->
-        <button *ngIf="!isAuth" mat-raised-button (click)="signInWithGoogle()" color="primary">Google</button>
-        <button *ngIf="isAuth" mat-raised-button (click)="signOut()" color="primary">Выход</button>
 
       <mat-button-toggle-group>
         <mat-button-toggle [routerLink]="'catalog'">
           Каталог
         </mat-button-toggle>
         <mat-button-toggle class="drop-down-button" [matMenuTriggerFor]="category">
-          <mat-icon>menu</mat-icon>
+          <fa-icon [icon]="faBars"></fa-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>
+
+      <ng-container>
+        <button *ngIf="!isAuth" mat-mini-fab (click)="signInWithGoogle()" color="warn">
+          <fa-icon [icon]="faGoogle"></fa-icon>
+        </button>
+        <button *ngIf="isAuth" mat-raised-button [routerLink]="'profile'" color="primary">Профиль</button>
+        <button *ngIf="isAuth" mat-raised-button (click)="signOut()" color="warn">Выход</button>
+      </ng-container>
 
       <mat-menu #category="matMenu">
         <ng-container *ngFor="let item of categories">
@@ -42,11 +47,11 @@
 
     </div>
   </div>
-  <div>
+
     <router-outlet>
     </router-outlet>
+
+  <div id="app-footer" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="20px" fxFlex="40px">
+    @Copyright reCommendme | powered by Angular & Django
   </div>
-
-
-  <div id="app-footer" fxFlex="40px">@Copyright reCommendme | powered by Angular & Django</div>
 </div>

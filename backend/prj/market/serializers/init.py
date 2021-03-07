@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from market.serializers.user_serializer import UserProfileSerializer
+from market.serializers.user_profile import UserProfileSerializer
 
 
 class InitSerializer(serializers.Serializer):

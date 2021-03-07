@@ -1,1 +1,10 @@
-<p>edit works!</p>
+<div id="app-center" fxFlex="100" fxLayoutAlign="center">
+  <div fxFlex="70" fxLayout="row wrap" fxLayoutGap="10px">
+
+    <ng-container *ngIf="!isAuth"><h1>Вам необходимо авторизоваться</h1></ng-container>
+
+    <ng-container *ngIf="isAuth">
+    <ng-container>{{ user['username'] }}</ng-container>
+    </ng-container>
+  </div>
+</div>

@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { EditComponent } from './edit/edit.component';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {EditComponent} from './edit/edit.component';
+import {RouterModule, Routes} from '@angular/router';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 const routes: Routes = [
-  { path: '', component: EditComponent}
+  {path: '', component: EditComponent}
 ];
 
 @NgModule({
@@ -12,6 +13,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    FlexLayoutModule
   ]
 })
-export class ProfileModule { }
+export class ProfileModule {
+}

@@ -7,6 +7,4 @@ class GoogleAuthRequestSerializer(serializers.Serializer):
     email = serializers.CharField()
     firstName = serializers.CharField()
     authToken = serializers.CharField()
-    provider = serializers.CharField()
     socket_id = serializers.CharField()
-

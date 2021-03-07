@@ -6,12 +6,12 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class LoginService {
 
-  isAuth$ = new BehaviorSubject(false);
   storage: any;
-  user$ = new BehaviorSubject(false);
+  isAuth$ = new BehaviorSubject(false);
+  // user$ = new BehaviorSubject(false);
 
   constructor() {
-    this.storage = sessionStorage;
+    this.storage = localStorage;
   }
 
   getToken(): string {
@@ -23,16 +23,16 @@ export class LoginService {
   }
 
   login(user: any): void {
-    this.isAuth$.next(true);
     this.setToken(user.token);
-    console.log(user);
-    this.user$.next(user.user);
+    this.isAuth$.next(true);
+    // this.user$.next(user.user);
+    // console.log(user);
   }
 
   logout(): void {
     this.isAuth$.next(false);
     this.storage.removeItem('access_token');
-    this.user$.next(false);
+    // this.user$.next(false);
   }
 
 }

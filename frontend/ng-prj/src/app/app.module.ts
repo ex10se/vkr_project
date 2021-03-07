@@ -26,10 +26,14 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
 import {MatGridListModule} from '@angular/material/grid-list';
 
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+
 import {GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule} from 'angularx-social-login';
 import {LoginService} from './login.service';
 
 import {AuthInterceptorService} from './auth-interceptor.service';
+import {CatalogModule} from './catalog/catalog.module';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 export const interceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
@@ -61,6 +65,9 @@ export const interceptorProviders = [
     MatListModule,
     MatGridListModule,
     SocialLoginModule,
+    FontAwesomeModule,
+    CatalogModule,
+    NgbModule,
   ],
   providers: [
     BasketService,
