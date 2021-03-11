@@ -1,7 +1,11 @@
+easy_thumbnails==2.7.1
 drf_yasg==1.20.0
 channels==3.0.3
-django_filter==2.4.0
-easy_thumbnails==2.7.1
+names_dataset==1.9.1
 django_image_cropping==1.5.0
 Django==3.1.7
+django_filter==2.4.0
+asgiref==3.3.1
 djangorestframework==3.12.2
+
+# pipreqs

@@ -33,6 +33,7 @@ urlpatterns = [
     re_path(r'^catalog.*', index),
     re_path(r'^basket.*', index),
     re_path(r'^profile.*', index),
+    re_path(r'^order.*', index),
     path('profile/notify', index),
     path('v1/', include([
         path('generic/', include(router.urls)),

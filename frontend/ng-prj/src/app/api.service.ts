@@ -40,7 +40,7 @@ export class ApiService {
   }
 
   getBasketInfo(pars: any): Observable<object> {
-    const data = {ids: pars};
+    const data = {products: pars};
     return this.http.post(`${environment.backendUrl}v1/market/basket_list`, data);
   }
 
@@ -52,8 +52,17 @@ export class ApiService {
     return this.http.get(`${environment.backendUrl}v1/market/init`);
   }
 
+  changeUserProfile(user: number, firstName: string, phone: string, address: string): Observable<object> {
+    return this.http.patch(`${environment.backendUrl}v1/market/user_profile`,
+      {user, firstName, phone, address});
+  }
+
   submitBasket(data: any): Observable<object> {
     return this.http.post(`${environment.backendUrl}v1/market/basket_submit`, data);
+  }
+
+  getOrderList(consumer: any): Observable<object> {
+    return this.http.post(`${environment.backendUrl}v1/market/order_list`, consumer);
   }
 
   notifyList(): Observable<object> {

@@ -7,6 +7,9 @@ import {MatCardModule} from '@angular/material/card';
 import {FlexLayoutModule} from '@angular/flex-layout';
 
 import {RouterModule, Routes} from '@angular/router';
+import {NgbRatingModule} from '@ng-bootstrap/ng-bootstrap';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 const routes: Routes = [
 
@@ -15,16 +18,20 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [ListComponent],
-    exports: [
-        ListComponent
-    ],
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        MatButtonModule,
-        MatCardModule,
-        FlexLayoutModule
-    ]
+  declarations: [ListComponent],
+  exports: [
+    ListComponent
+  ],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    MatButtonModule,
+    MatCardModule,
+    FlexLayoutModule,
+    NgbRatingModule,
+    MatButtonToggleModule,
+    FontAwesomeModule
+  ]
 })
-export class BasketModule {}
+export class BasketModule {
+}

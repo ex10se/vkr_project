@@ -7,7 +7,8 @@ from market.serializers.subcategory import SubcategorySerializer
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     subcategory = serializers.SerializerMethodField()
 
-    def get_subcategory(self, obj):
+    @staticmethod
+    def get_subcategory(obj):
         out = []
         for item in Subcategory.objects.filter(category=obj):
             out.append(SubcategorySerializer(item).data)
@@ -16,3 +17,9 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name', 'image_url', 'subcategory')
+
+
+class CategoryPartialSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'image_url')

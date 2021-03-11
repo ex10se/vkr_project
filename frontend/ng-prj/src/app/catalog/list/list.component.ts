@@ -6,6 +6,7 @@ import {BasketService} from '../../basket.service';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {ViewportScroller} from '@angular/common';
 import {LoginService} from '../../login.service';
+import {faCartPlus} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -49,6 +50,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   }
 
+  faCartPlus = faCartPlus;
   isAuth = false;
   user = 0;
   pageYoffset = 0;
@@ -95,6 +97,10 @@ export class ListComponent implements OnInit, AfterViewInit {
     this.apiService.getProductList(pars, limit, offset).subscribe((res: any) => {
       if (res.results.length > 0) {
         this.products = res.results;
+        for (const product of this.products) {
+          product.amount = 1;
+        }
+        console.log(this.products);
         this.productsCount = res.count;
       } else {
         this.router.navigate(['/'], {replaceUrl: true}).then();
@@ -107,14 +113,35 @@ export class ListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  doAddToBasket(id: any): void {
-    if (!this.basketService.isInBasket(id)) {
-      this.basketService.addToBasket(id);
-    }
+  doAddToBasket(id: number, amount: any): void {
+    this.basketService.addToBasket(id, amount);
   }
 
   scrollToTop(): void {
     this.scroll.scrollToPosition([0, 0]);
+  }
+
+  onPlus(product: any): void {
+    product.amount += 1;
+    this.basketService.addToBasket(product.id, product.amount);
+  }
+
+  onMinus(product: any): void {
+    if (product.amount > 1) {
+      product.amount -= 1;
+    }
+    this.basketService.addToBasket(product.id, product.amount);
+  }
+
+  onWheel(product: any, event: WheelEvent): void {
+    event.preventDefault();
+    if (event.deltaY > 0) {
+      if (product.amount > 1) {
+        product.amount -= 1;
+      }
+    } else {
+      product.amount += 1;
+    }
   }
 
 }

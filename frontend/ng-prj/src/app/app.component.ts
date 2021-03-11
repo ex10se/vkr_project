@@ -6,10 +6,9 @@ import {GoogleLoginProvider, SocialAuthService, SocialUser} from 'angularx-socia
 import {ApiService} from './api.service';
 import {BasketService} from './basket.service';
 import {LoginService} from './login.service';
-import {SocketService} from './socket.service';
 
 import {faGoogle} from '@fortawesome/free-brands-svg-icons';
-import {faBars, faCartPlus} from '@fortawesome/free-solid-svg-icons';
+import {faBars} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -19,19 +18,18 @@ import {faBars, faCartPlus} from '@fortawesome/free-solid-svg-icons';
 })
 export class AppComponent {
   faGoogle = faGoogle;
-  faCartPlus = faCartPlus;
   faBars = faBars;
+
   categories: Array<any> = [];
   basket: Array<any> = [];
   user: SocialUser | undefined;
-  GoogleLoginProvider = GoogleLoginProvider;
   isAuth = false;
 
   constructor(
     private apiService: ApiService,
     private basketService: BasketService,
     private authService: SocialAuthService,
-    private loginService: LoginService,
+    private loginService: LoginService
   ) {
     this.basketService.basket$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.basket = data;

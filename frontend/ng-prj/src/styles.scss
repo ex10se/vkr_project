@@ -7,9 +7,38 @@ html, body {
   color: black;
   scroll-behavior: smooth;
 }
-
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+h1 {
+  color: #264D73;
+  font-size: 250%;
+}
+h2, h3 {
+  color: #444;
+  font-weight: lighter;
+}
+body, input[text] {
+  color: #333;
+}
+a {
+  cursor: pointer;
+}
+ngb-rating:focus {
+  outline: none;
+}
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+table {
+  width: 100%;
+}
+.plus-minus-group .mat-button-toggle-label-content{
+  line-height: 0 !important;
+  padding: 12px 10px 10px 10px !important
+}
+
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';

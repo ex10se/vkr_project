@@ -33,12 +33,18 @@ mat-button-toggle-group:active {
 }
 
 mat-button-toggle {
-  background-color: #3f51b5;
   color: #fff;
   align-self: center;
+}
+
+.catalog mat-button-toggle {
+  background-color: #3f51b5;
+}
+
+.profile-orders mat-button-toggle {
+  background-color: #9a5276;
 }
 
 .mat-button-toggle-checked {
   color: #fff;
 }
-

@@ -19,6 +19,10 @@ const routes: Routes = [
     path: 'catalog',
     loadChildren: () => import('./catalog/catalog.module').then(m => m.CatalogModule),
   },
+    {
+    path: 'orders',
+    loadChildren: () => import('./order/order.module').then(m => m.OrderModule),
+  },
   {
     path: '**',
     redirectTo: '/'

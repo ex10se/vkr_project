@@ -3,9 +3,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ApiService} from '../../api.service';
 import {BasketService} from '../../basket.service';
 import {LoginService} from '../../login.service';
-import {GoogleLoginProvider, SocialAuthService} from 'angularx-social-login';
 import {Subject} from 'rxjs';
 import {Router} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-list',
@@ -18,42 +19,49 @@ export class ListComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private basketService: BasketService,
     private loginService: LoginService,
-    private authService: SocialAuthService,
-    private router: Router,
+    private router: Router
   ) {
+    this.loginService.isAuth$.subscribe((res: any) => {
+      this.isAuth = res;
+      if (this.isAuth) {
+        this.apiService.init().subscribe((data: any) => {
+          this.user = data.user;
+        });
+      }
+    });
     this.apiService.getBasketInfo(this.basketService.getBasket()).subscribe((rez: any) => {
       if (rez.length === 0 && !this.isBasketSubmitted) {
         this.router.navigate(['/'], {replaceUrl: true}).then();
       } else {
         this.basket = rez;
+        this.basketService.basket$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+          for (const product of this.basket) {
+            product.amount = data.find((x: { product: any; }) => x.product === product.id).amount;
+            product.price_multiple = product.get_price * product.amount;
+          }
+        });
       }
     });
-    this.loginService.isAuth$.subscribe(data => {
-      this.isAuth = data;
-    });
   }
 
+  faTrashAlt = faTrashAlt;
   basket: Array<any> = [];
   isAuth = false;
-  private unsubscribe = new Subject();
+  user = {first_name: '', phone: '', address: ''};
   isBasketSubmitted = false;
+  isBasketClearTry = false;
+  private unsubscribe = new Subject();
 
   ngOnInit(): void {
-  }
-
-  signInWithGoogle(): void {
-    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(() => {
-      this.authService.authState.subscribe(user => {
-        this.apiService.loginByGoogle(user).subscribe((rez) => {
-          this.loginService.login(rez);
-        });
-      });
-    });
   }
 
   ngOnDestroy(): void {
     this.unsubscribe.next();
     this.unsubscribe.complete();
+  }
+
+  askToClearBasket(): void {
+    this.isBasketClearTry = true;
   }
 
   clearBasket(): void {
@@ -67,14 +75,50 @@ export class ListComponent implements OnInit, OnDestroy {
     this.basketService.removeFromBasket(id);
   }
 
+  getTotalPrice(): number {
+    let result = 0;
+    for (const product of this.basket) {
+      result += product.price_multiple;
+    }
+    return result;
+  }
+
+  isProfileFilled(): boolean {
+    return !!(this.user.first_name && this.user.phone && this.user.address);
+  }
+
   submitBasket(): void {
     const reqData = {products: Array<object>()};
     for (const p of this.basket) {
-      reqData.products.push({product: p.id, amount: 1});
+      reqData.products.push({product: p.id, amount: p.amount});
     }
     this.apiService.submitBasket(reqData).subscribe(() => {
       this.clearBasket();
       this.isBasketSubmitted = this.basketService.isSubmitted = true;
     });
+  }
+
+  onPlus(product: any): void {
+    product.amount += 1;
+    this.basketService.addToBasket(product.id, product.amount);
+  }
+
+  onMinus(product: any): void {
+    if (product.amount > 1) {
+      product.amount -= 1;
+    }
+    this.basketService.addToBasket(product.id, product.amount);
+  }
+
+  onWheel(product: any, event: WheelEvent): void {
+    event.preventDefault();
+    if (event.deltaY > 0) {
+      if (product.amount > 1) {
+        product.amount -= 1;
+      }
+    } else {
+      product.amount += 1;
+    }
+    this.basketService.addToBasket(product.id, product.amount);
   }
 }

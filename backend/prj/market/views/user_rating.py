@@ -1,5 +1,6 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -7,27 +8,11 @@ from market.models import UserRating, Store
 from market.serializers.user_rating import UserRatingSerializer, UserRatingPartialSerializer
 
 
-# class UserRatingViewSet(UpdateModelMixin, GenericViewSet):
-#     serializer_class = UserRatingSerializer
-
-# pagination_class = None
-
-# def get_queryset(self):
-#     return UserRating.objects.all()
-
-# @swagger_auto_schema(request_body=UserRatingSerializer)
-# def patch(self, request, user, rating):
-#     print(request)
-#     user_rating = UserRating.objects.get(user=user)
-#     user_rating.rating = rating
-#     user_rating.save()
-#     return Response(status=status.HTTP_201_CREATED)
-
-
 class UserRatingView(APIView):
     """
     API endpoint для пользовательских оценок продуктов
     """
+    permission_classes = (AllowAny,)
 
     @swagger_auto_schema(request_body=UserRatingPartialSerializer)
     def post(self, request):

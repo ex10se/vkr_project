@@ -1,10 +1,33 @@
-<div id="app-center" fxFlex="100" fxLayoutAlign="center">
-  <div fxFlex="70" fxLayout="row wrap" fxLayoutGap="10px">
+<div id="app-center" fxFlex="100" fxLayout="column" fxLayoutAlign="start center">
 
-    <ng-container *ngIf="!isAuth"><h1>Вам необходимо авторизоваться</h1></ng-container>
+  <ng-container *ngIf="!isAuth"><h1>Вам необходимо авторизоваться</h1></ng-container>
 
-    <ng-container *ngIf="isAuth">
-    <ng-container>{{ user['username'] }}</ng-container>
-    </ng-container>
-  </div>
+  <ng-container *ngIf="isAuth">
+
+    <ng-container *ngIf="formSubmitted"><h1>Профиль сохранен</h1></ng-container>
+    <ng-container *ngIf="!formSubmitted"><h1>Профиль</h1></ng-container>
+    <br>
+    <form (ngSubmit)="onSubmit()" gdAuto="row dense" gdGap="10px">
+      <mat-form-field appearance="outline">
+        <mat-label>Имя</mat-label>
+        <input matInput type="text" [formControl]="form.get('firstName')" placeholder="Имя"
+               id="first-name" name="first-name" required>
+        <mat-error *ngIf="form.get('firstName').invalid">Пожалуйста, введите имя</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Телефон</mat-label>
+        <input matInput type="tel" [formControl]="form.get('phone')"
+               placeholder="Телефон" id="phone" name="phone" required>
+        <mat-error *ngIf="form.get('phone').invalid">Пожалуйста, введите верный номер телефона</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Адрес доставки</mat-label>
+        <textarea matInput matTextareaAutosize [formControl]="form.get('address')" placeholder="Адрес"
+                  id="address" name="address" required></textarea>
+        <mat-error *ngIf="form.get('address').invalid">Пожалуйста, введите адрес</mat-error>
+      </mat-form-field>
+      <button type="submit" class="btn btn-success" [disabled]="!form.valid || !form.touched">Сохранить</button>
+    </form>
+  </ng-container>
 </div>
+

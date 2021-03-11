@@ -58,7 +58,7 @@ mat-card:hover {
 
 #description span {
   display: block;
-  padding-bottom: 10px;
+  //padding-bottom: 10px;
 }
 
 // category image
@@ -77,13 +77,12 @@ mat-card:hover {
 .mat-card-image {
   max-height: 100px;
   max-width: 100px;
-  margin: 0 !important;
+  margin: 10px 0 0 0 !important;
+  cursor: pointer;
 }
 
 .mat-card-content {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  margin: 10px 0 10px 0 !important;
 }
 
 mat-card-actions {
@@ -94,6 +93,23 @@ mat-card-actions {
 
 button.mat-stroked-button.price {
   color: #8e8181;
+  border: none;
+}
+
+.plus-minus-group {
+  height: 48px;
+}
+
+.plus-minus {
+  height: 24px;
+}
+
+.count {
+  color: #8e8181;
+}
+
+.to-basket {
+  margin: 0 !important;
 }
 
 .star {
@@ -111,4 +127,12 @@ button.mat-stroked-button.price {
   position: absolute;
   display: inline-block;
   overflow: hidden;
+}
+
+.category-title {
+  margin: 0 !important;
+}
+
+.subcategory-title {
+  margin: 0 !important;
 }

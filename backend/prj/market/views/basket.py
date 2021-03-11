@@ -17,22 +17,21 @@ from asgiref.sync import async_to_sync
 
 class BasketInfoView(APIView):
     """
-    Получение информации о товарах в корзине.
+    Получение информации о товарах в корзине
     """
     permission_classes = (AllowAny,)
 
     @swagger_auto_schema(request_body=BasketRequestSerializer)
     def post(self, request):
         out = []
-        for it in request.data['ids']:
-            out.append(ProductSerializer(Product.objects.get(pk=it)).data)
+        for product in request.data['products']:
+            out.append(ProductSerializer(Product.objects.get(pk=product['product'])).data)
         return Response(out)
 
 
 class BasketSubmitView(APIView):
     """
-    Отправка корзины.
-    ___________________________
+    Отправка корзины, создание заказа
     """
 
     permission_classes = (IsAuthenticated,)

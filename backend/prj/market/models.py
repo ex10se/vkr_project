@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import signals, Avg
+from django.db.models import signals, Avg, Sum
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from easy_thumbnails.files import get_thumbnailer
@@ -12,7 +12,7 @@ from prj.settings import BACKEND_URL
 
 class UserProfile(User):
     phone = models.CharField(max_length=20)
-    address = models.TextField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True, default='')
 
     def __str__(self):
         return self.username
@@ -82,6 +82,10 @@ class Product(models.Model):
         }).url
 
     @property
+    def image_url(self):
+        return BACKEND_URL + self.image.url
+
+    @property
     def get_price(self):
         return Store.objects.get(product_id=self.id).price
 
@@ -131,34 +135,43 @@ class UserRating(models.Model):
 
 class Order(models.Model):
     STATUS = (
-        ('new', 'new order'),
-        ('pending', 'pending order'),
-        ('finished', 'finished order'),
+        ('new', 'Новый заказ'),
+        ('pending', 'Подготовка заказа'),
+        ('finished', 'Завершенный заказ'),
+        ('canceled', 'Отмененный заказ'),
     )
 
     consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, default='new', choices=STATUS)
 
     class Meta:
         verbose_name = 'order'
         verbose_name_plural = 'orders'
 
+    @property
+    def total_price(self):
+        return sum(product.price_multiple for product in OrderProduct.objects.filter(order=self))
+
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    amount = models.IntegerField(default=0)
+    amount = models.PositiveIntegerField(default=1)
 
     class Meta:
         verbose_name = 'order product'
         verbose_name_plural = 'order products'
 
+    @property
+    def price_multiple(self):
+        return self.product.get_price * self.amount
+
 
 class Notification(models.Model):
-    product = models.ForeignKey(Product,on_delete=models.CASCADE, null=True, blank=True)
-    consumer = models.ForeignKey(UserProfile,on_delete=models.CASCADE, null=True, blank=True, related_name='consumer')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True, related_name='consumer')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

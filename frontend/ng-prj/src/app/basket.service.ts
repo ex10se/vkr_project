@@ -7,13 +7,11 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class BasketService {
 
-  private readonly _basket: Array<number> = [];
+  private readonly _basket: Array<any> = [];
 
   basket$: BehaviorSubject<any> = new BehaviorSubject([]);
-  basketCount$: BehaviorSubject<any> = new BehaviorSubject(0);
   isSubmitted = false;
 
-  // TODO прикрутить количество одинаковых товаров basketCount$
 
   constructor() {
     if (localStorage.getItem('basket')) {
@@ -22,53 +20,56 @@ export class BasketService {
     }
   }
 
-  getBasket(): any {
+  getBasket(): Array<object> {
     return this._basket;
   }
 
-  addToBasket(id: any): void {
-    this._basket.push(id);
+  addToBasket(product: number, amount: number): void {
+    try {  // если есть продукт, изменяем его количество
+      this._basket.find(x => x[`product`] === product).amount = amount;
+    } catch (TypeError) {  // если нет продукта, добавляем
+      this._basket.push({product, amount});
+    }
     this.basket$.next(this._basket);
-    this.setToLocalStorage(id);
+    this.setToLocalStorage(product, amount);
     this.isSubmitted = false;
   }
 
-  private setToLocalStorage(id: number): void {
-    if (!id) {
+  private setToLocalStorage(product: number, amount: number): void {
+    if (!product) {
       return;
     } else if (!localStorage.getItem('basket')) {
-      localStorage.setItem('basket', JSON.stringify([id]));
+      localStorage.setItem('basket', JSON.stringify({product, amount}));
     } else {
       localStorage.setItem('basket', JSON.stringify(this._basket));
       this.basket$.next(JSON.parse(localStorage.getItem('basket') as string));
     }
   }
 
-  removeFromBasket(id?: any): void {
-    if (!id) {
+  removeFromBasket(product?: any): void {
+    if (!product) {
       this._basket.splice(0, this._basket.length);
     } else {
-      const index = this._basket.findIndex(x => x.valueOf() === id);
+      const index = this._basket.findIndex(x => x.valueOf() === product);
       this._basket.splice(index, 1);
     }
     this.basket$.next(this._basket);
-    this.removeFromLocalstorage(id);
-
+    this.removeFromLocalstorage(product);
   }
 
-  private removeFromLocalstorage(id?: any): void {  // удаление продукта из корзины, либо очистка
-    if (!id) {
+  private removeFromLocalstorage(product?: any): void {  // удаление продукта из корзины, либо очистка
+    if (!product) {
       localStorage.removeItem('basket');
     } else {
       const basket = JSON.parse(localStorage.getItem('basket') as string);
-      const index = basket.findIndex((x: number) => x === id);
+      const index = basket.findIndex((x: number) => x === product);
       basket.splice(index, 1);
       localStorage.setItem('basket', JSON.stringify(basket));
     }
   }
 
-  isInBasket(value: any): boolean {
-    return this._basket.indexOf(value) > -1;
+  isInBasket(product: any): boolean {
+    return this._basket.indexOf(product) > -1;
   }
 
 }

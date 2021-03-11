@@ -23,7 +23,6 @@ class SubcategoryAdmin(admin.ModelAdmin):
     list_filter = ('category',)
 
 
-# Fixme фильтруя по категории, отображаются подкатегории только относящиеся к этой категории, а не все
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'category', 'subcategory', 'get_small_image')
     search_fields = ('id', 'name')
@@ -51,7 +50,7 @@ class OrderProductAdmin(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     inlines = (OrderProductAdmin,)
-    list_display = ('consumer', 'created_at')
+    list_display = ('id', 'consumer', 'created_at', 'total_price')
 
 
 class NotificationAdmin(admin.ModelAdmin):
