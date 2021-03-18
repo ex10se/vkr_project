@@ -1,6 +1,7 @@
 <div id="app-content" fxLayout="column" fxFlexFill>
   <div id="app-header" fxFlex="60px" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-    <a href="#" [routerLink]="'catalog'"><img id="logo" src="static/angular/assets/images/logo.png" alt="logo"></a>
+    <a href="#" [routerLink]="'catalog'"><img id="logo" [src]=logoSrc
+                                              alt="logo" (error)="logoSrc='static/angular/assets/images/logo.png'"></a>
     <div fxLayout="row" fxFlex="100" fxLayoutAlign="end center" fxLayoutGap="10px">
 <!--      {{basket|json}}-->
       <button mat-raised-button [routerLink]="'basket'" color="primary" *ngIf="basket.length > 0"

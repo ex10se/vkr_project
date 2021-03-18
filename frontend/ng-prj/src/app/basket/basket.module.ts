@@ -10,6 +10,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {NgbRatingModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {CrystalLightboxModule} from '@crystalui/angular-lightbox';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const routes: Routes = [
 
@@ -22,16 +24,18 @@ const routes: Routes = [
   exports: [
     ListComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatButtonModule,
-    MatCardModule,
-    FlexLayoutModule,
-    NgbRatingModule,
-    MatButtonToggleModule,
-    FontAwesomeModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatButtonModule,
+        MatCardModule,
+        FlexLayoutModule,
+        NgbRatingModule,
+        MatButtonToggleModule,
+        FontAwesomeModule,
+        CrystalLightboxModule,
+        MatProgressSpinnerModule
+    ]
 })
 export class BasketModule {
 }

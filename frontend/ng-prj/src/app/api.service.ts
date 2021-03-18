@@ -35,13 +35,13 @@ export class ApiService {
   }
 
   setProductRating(user: number, product: number, rating: number): Observable<object> {
+    console.log(user, product, rating);
     return this.http.patch(`${environment.backendUrl}v1/market/user_rating_list`,
       {user, product, rating});
   }
 
   getBasketInfo(pars: any): Observable<object> {
-    const data = {products: pars};
-    return this.http.post(`${environment.backendUrl}v1/market/basket_list`, data);
+    return this.http.post(`${environment.backendUrl}v1/market/basket_list`, {products: pars});
   }
 
   loginByGoogle(data: any): Observable<object> {
@@ -61,11 +61,11 @@ export class ApiService {
     return this.http.post(`${environment.backendUrl}v1/market/basket_submit`, data);
   }
 
-  getOrderList(consumer: any): Observable<object> {
-    return this.http.post(`${environment.backendUrl}v1/market/order_list`, consumer);
+  getOrderList(user: any): Observable<object> {
+    return this.http.post(`${environment.backendUrl}v1/market/order_list`, {consumer: user});
   }
 
-  notifyList(): Observable<object> {
-    return this.http.get(`${environment.backendUrl}v1/market/notification_list`);
-  }
+  // notifyList(): Observable<object> {
+  //   return this.http.get(`${environment.backendUrl}v1/market/notification_list`);
+  // }
 }

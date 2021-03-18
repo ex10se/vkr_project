@@ -1,13 +1,9 @@
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import signals, Avg, Sum
+from django.db.models import signals, Avg
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
-from easy_thumbnails.files import get_thumbnailer
-from image_cropping.fields import ImageRatioField, ImageCropField
-
-from prj.settings import BACKEND_URL
 
 
 class UserProfile(User):
@@ -42,10 +38,6 @@ class Category(models.Model):
         except ValueError:
             return None
 
-    @property
-    def image_url(self):
-        return BACKEND_URL + self.image.url
-
 
 class Subcategory(models.Model):
     name = models.CharField(max_length=250, default='', unique=True)
@@ -61,37 +53,24 @@ class Subcategory(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=250, default='', unique=True)
-    image = ImageCropField(upload_to='product', null=True, blank=True)
+    image = models.ImageField(upload_to='product', null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True, blank=True)
-    cropping = ImageRatioField('image', '150x150')
 
     def __str__(self):
-        return f'{self.name} ({self.get_price} ₽)'
+        return f'{self.name} ({self.price} ₽)'
 
     @property
-    def get_small_image(self):
-        return mark_safe(f'<img src="{self.get_small_image_url}">')
+    def image_tag(self):
+        return mark_safe(f'<img src="{self.image.url}" style="width: 100px; height: 100px; object-fit: cover;">')
 
     @property
-    def get_small_image_url(self):
-        return BACKEND_URL + get_thumbnailer(self.image).get_thumbnail({
-            'size': (100, 100),
-            'box': self.cropping,
-            'crop': 'smart',
-        }).url
+    def price(self):
+        return Store.objects.select_related('product').get(product_id=self.id).price
 
     @property
-    def image_url(self):
-        return BACKEND_URL + self.image.url
-
-    @property
-    def get_price(self):
-        return Store.objects.get(product_id=self.id).price
-
-    @property
-    def get_common_rating(self):
-        return Store.objects.get(product_id=self.id).common_rating
+    def common_rating(self):
+        return Store.objects.select_related('product').get(product_id=self.id).common_rating
 
     class Meta:
         verbose_name = 'product'
@@ -116,8 +95,9 @@ class Store(models.Model):
 # не получилось вытащить в отдельный файл signals
 # расчет общего (среднего) рейтинга продукта при сохранении объекта модели Store
 @receiver(signals.pre_save, sender=Store)
-def calc_rating(sender, instance, **kwargs):
-    avg_rating = UserRating.objects.filter(product=instance.product).aggregate(Avg('rating'))['rating__avg']
+def calc_rating(sender, instance, **kwargs): # noqa
+    avg_rating = UserRating.objects.filter(
+        product=instance.product).prefetch_related('user', 'product').aggregate(Avg('rating'))['rating__avg']
     instance.common_rating = avg_rating if avg_rating else 0
 
 
@@ -166,14 +146,40 @@ class OrderProduct(models.Model):
 
     @property
     def price_multiple(self):
-        return self.product.get_price * self.amount
+        return self.product.price * self.amount
+
+    @property
+    def consumer(self):
+        return self.order.consumer
+
+    @property
+    def user_rating(self):
+        return UserRating.objects.get(user=self.consumer, product=self.product).rating
 
 
-class Notification(models.Model):
+# class Notification(models.Model):
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+#     consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     class Meta:
+#         verbose_name = 'Notification'
+#         verbose_name_plural = 'Notifications'
+
+
+class Recommendation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True, related_name='consumer')
-    created_at = models.DateTimeField(auto_now_add=True)
+    prediction = models.DecimalField(max_digits=3, decimal_places=2, default=0)
 
     class Meta:
-        verbose_name = 'Notification'
-        verbose_name_plural = 'Notifications'
+        verbose_name = 'Recommendation'
+        verbose_name_plural = 'Recommendations'
+
+    @property
+    def user_rating(self):
+        return UserRating.objects.get(user=self.user, product=self.product).rating
+
+    @property
+    def common_rating(self):
+        return Store.objects.get(product=self.product).common_rating

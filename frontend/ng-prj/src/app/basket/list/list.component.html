@@ -1,110 +1,103 @@
 <div id="app-center" fxFlex="100" fxLayout="column nowrap" fxLayoutAlign="start center" fxLayoutGap="10px">
 
-  <h1 *ngIf="basket.length == 0 && !isBasketSubmitted">Корзина пуста</h1>
-  <h1 *ngIf="basket.length == 0 && isBasketSubmitted">Заказ оформлен</h1>
-  <ng-container *ngIf="basket.length > 0">
-    <div><h1>Корзина</h1></div>
+  <div *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
 
-    <div *ngIf="!isAuth">
-      <h2>Вам необходимо авторизоваться</h2>
-    </div>
+  <ng-container *ngIf="!loading">
+    <h1 *ngIf="basket.length == 0 && !isBasketSubmitted">Корзина пуста</h1>
+    <h1 *ngIf="basket.length == 0 && isBasketSubmitted">Заказ оформлен</h1>
+    <ng-container *ngIf="basket.length > 0">
+      <div><h1>Корзина</h1></div>
 
-    <div *ngIf="isBasketClearTry">
-      <h4>Уверены, что хотите очистить корзину?</h4>
-    </div>
-    <div fxLayout="row" fxLayoutGap="10px">
-      <div>
-        <button mat-raised-button class="buttonDeleteAll" *ngIf="!isBasketClearTry"
-                (click)="askToClearBasket()" color="warn">Очистить корзину
-        </button>
-        <button mat-raised-button *ngIf="isBasketClearTry"
-                (click)="clearBasket()" color="primary">Да
-        </button>
-        <div class="divider"></div>
-        <button mat-raised-button *ngIf="isBasketClearTry"
-                (click)="isBasketClearTry = false" color="warn">Отменить
-        </button>
+      <div *ngIf="!isAuth">
+        <h2>Вам необходимо авторизоваться</h2>
       </div>
-      <div id="total-price" *ngIf="!isBasketClearTry">Всего {{getTotalPrice()}} ₽</div>
-      <div *ngIf="isAuth">
-        <h4 *ngIf="!isProfileFilled()">Вам необходимо заполнить профиль</h4>
-        <button mat-raised-button [disabled]="!isProfileFilled()" *ngIf="!isBasketClearTry"
-                (click)="submitBasket()" color="accent">Отправить заказ
-        </button>
+
+      <div *ngIf="isBasketClearTry">
+        <h4>Уверены, что хотите очистить корзину?</h4>
       </div>
-    </div>
-
-    <!--  TODO цена корзины -->
-
-    <div fxFlex="70" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
-      <mat-card class="example-card" *ngFor="let product of basket"
-                fxFlex="300px" fxLayout="column wrap" fxLayoutAlign="center">
-        <mat-card-header>
-          <div mat-card-avatar class="example-header-image">
-            <a href="#" [routerLink]="['/catalog/cat/',product['category']['id']]">
-              <img class="cat-img" src="{{ product['category']['image_url'] }}"
-                   [alt]="product['category']['name']" [title]="product['category']['name']">
-            </a>
-          </div>
-          <mat-card-title>{{ product['name'] }}</mat-card-title>
-          <mat-card-subtitle class="category-title">
-            <button mat-flat-button
-                    [routerLink]="['/catalog/cat/',product['category']['id']]">{{ product['category']['name'] }}</button>
-          </mat-card-subtitle>
-          <mat-card-subtitle class="subcategory-title">
-            <button mat-flat-button
-                    [routerLink]="['/catalog/subcat/',product['subcategory']['id']]">{{ product['subcategory']['name'] }}</button>
-          </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <!--  TODO фотография продукта - модалка с инфой о нем и крупной фоткой -->
-          <a [routerLink]="'#'"><img mat-card-image [src]="product['get_small_image_url']"
-                                     [alt]="product['name']"></a>
-          <div id="description">
-            <!-- Временное решение: TODO описание продукта -->
-            <span>{{product['id']}} {{ product['name'].slice(0, product['name'].indexOf(' ')) }}</span>
-
-            <span *ngIf="!isAuth">
-            <ngb-rating [(rate)]="product['get_common_rating']" [max]="5" [readonly]=true>
-              <ng-template let-fill="fill">
-                <span class="star" [class.full]="fill === 100">
-                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
-                </span>
-              </ng-template>
-            </ngb-rating>
-          </span>
-
-            <span *ngIf="isAuth">{{product['get_common_rating']}}
-              <ngb-rating [rate]="product['get_common_rating']" [max]="5" [readonly]=false>
-              <ng-template let-fill="fill">
-                <span class="star" [class.full]="fill === 100">
-                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
-                </span>
-              </ng-template>
-            </ngb-rating>
-          </span>
-
-          </div>
-        </mat-card-content>
-        <mat-card-actions>
-          <button class="price" mat-stroked-button disabled>
-            {{product['get_price']}} ₽ за шт<br><b>{{product['price_multiple']}} ₽</b>
+      <div fxLayout="row" fxLayoutGap="10px">
+        <div>
+          <button mat-raised-button class="buttonDeleteAll" *ngIf="!isBasketClearTry"
+                  (click)="askToClearBasket()" color="warn">Очистить корзину
           </button>
-          <mat-button-toggle-group (wheel)="onWheel(product, $event)">
-            <mat-button-toggle class="count" disabled>{{product['amount']}} шт</mat-button-toggle>
-            <mat-button-toggle-group vertical class="plus-minus-group">
-              <mat-button-toggle class="plus-minus" (click)="onPlus(product)">+
-              </mat-button-toggle>
-              <mat-button-toggle class="plus-minus" (click)="onMinus(product)">-
-              </mat-button-toggle>
+          <button mat-raised-button *ngIf="isBasketClearTry"
+                  (click)="clearBasket()" color="primary">Да
+          </button>
+          <div class="divider"></div>
+          <button mat-raised-button *ngIf="isBasketClearTry"
+                  (click)="isBasketClearTry = false" color="warn">Отменить
+          </button>
+        </div>
+        <div id="total-price" *ngIf="!isBasketClearTry">Всего {{getTotalPrice()}} ₽</div>
+        <div *ngIf="isAuth">
+          <h4 *ngIf="!isProfileFilled()">Вам необходимо заполнить профиль</h4>
+          <button mat-raised-button [disabled]="!isProfileFilled()" *ngIf="!isBasketClearTry"
+                  (click)="submitBasket()" color="accent">Отправить заказ
+          </button>
+        </div>
+      </div>
+
+      <div class="products" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
+        <mat-card class="example-card" *ngFor="let product of basket"
+                  fxFlex="300px" fxLayout="column wrap"
+                  fxLayoutAlign="center">
+          <mat-card-header>
+            <div mat-card-avatar class="example-header-image">
+              <a href="#" [routerLink]="['/catalog/cat/',product['category']['id']]">
+                <img class="cat-img" src="{{ product['category']['image'] }}"
+                     [alt]="product['category']['name']" [title]="product['category']['name']">
+              </a>
+            </div>
+            <mat-card-title>{{ product['name'] }}</mat-card-title>
+            <mat-card-subtitle class="category-title">
+              <button mat-flat-button
+                      [routerLink]="['/catalog/cat/',product['category']['id']]">{{ product['category']['name'] }}</button>
+            </mat-card-subtitle>
+            <mat-card-subtitle class="subcategory-title">
+              <button mat-flat-button
+                      [routerLink]="['/catalog/subcat/',product['subcategory']['id']]">{{ product['subcategory']['name'] }}</button>
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content fxFlex fxLayoutAlign="space-around center">
+            <img mat-card-image [src]="product['image']" [alt]="product['name']"
+                 lightbox [fullImage]="{path: product['image'] }">
+            <div class="description">
+            <span>Рейтинг
+              <ngb-rating [(rate)]="product['common_rating']" [max]="5" [readonly]=true class="read">
+              <ng-template let-fill="fill">
+                <span class="star-background" [class.full]="fill === 100">
+                  <span class="star-foreground star-read" [style.width.%]="fill">&#9733;</span>&#9733;
+                </span>
+              </ng-template>
+            </ngb-rating>
+          </span>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button class="price" mat-stroked-button disabled>
+              {{product['price']}} ₽ за шт<br><b>Всего {{product['price_multiple']}} ₽</b>
+            </button>
+            <mat-button-toggle-group (wheel)="onWheel(product, $event)">
+              <mat-button-toggle class="count" disabled>{{product['amount']}} шт</mat-button-toggle>
+              <mat-button-toggle-group vertical class="plus-minus-group">
+                <mat-button-toggle class="plus-minus" (click)="onPlus(product)">+
+                </mat-button-toggle>
+                <mat-button-toggle class="plus-minus" (click)="onMinus(product)">-
+                </mat-button-toggle>
+              </mat-button-toggle-group>
             </mat-button-toggle-group>
-          </mat-button-toggle-group>
-          <button mat-raised-button color="accent" (click)="delFromBasket(product.id)" value="{{product.id}}">
-            <fa-icon [icon]="faTrashAlt"></fa-icon>
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
+            <button mat-raised-button color="accent" (click)="delFromBasket(product.id)" value="{{product.id}}">
+              <fa-icon [icon]="faTrashAlt"></fa-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+        <!-- костыль для правильного margin-right последней карточки продукта на странице -->
+        <div></div>
+      </div>
+
+    </ng-container>
 
   </ng-container>
 </div>

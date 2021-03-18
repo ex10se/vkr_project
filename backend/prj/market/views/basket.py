@@ -4,7 +4,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from market.models import Notification
 from market.models import Product, Order, OrderProduct
 from market.serializers.basket import BasketRequestSerializer, BasketSubmitRequestSerializer
 from market.serializers.product import ProductSerializer
@@ -25,7 +24,7 @@ class BasketInfoView(APIView):
     def post(self, request):
         out = []
         for product in request.data['products']:
-            out.append(ProductSerializer(Product.objects.get(pk=product['product'])).data)
+            out.append(ProductSerializer(Product.objects.get(id=product['product'])).data)
         return Response(out)
 
 
@@ -49,11 +48,11 @@ class BasketSubmitView(APIView):
             op.amount = item['amount']
             op.save()
 
-            noty = Notification()
-            noty.product = product
-            noty.consumer = request.user.userprofile
-            noty.save()
-
-        async_to_sync(channel_layer.group_send)("notifications", {"type": "send_notify"})
+        #     noty = Notification()
+        #     noty.product = product
+        #     noty.consumer = request.user.userprofile
+        #     noty.save()
+        #
+        # async_to_sync(channel_layer.group_send)("notifications", {"type": "send_notify"})
 
         return Response(OrderSerializer(o).data)

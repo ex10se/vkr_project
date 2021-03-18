@@ -5,16 +5,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from market.models import Order
-from market.serializers.order import OrderSerializer
+from market.serializers.order import OrderSerializer, OrderRequestSerializer
 
 
 class OrderView(APIView):
     """
     API endpoint для заказов пользователя
     """
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(request_body=OrderSerializer)
+    @swagger_auto_schema(request_body=OrderRequestSerializer, responses={200: OrderSerializer})
     def post(self, request):
-        order = Order.objects.filter(consumer=request.data)
+        order = Order.objects.filter(consumer=request.data['consumer']).prefetch_related('orderproduct_set')
         return Response(OrderSerializer(order, many=True).data)

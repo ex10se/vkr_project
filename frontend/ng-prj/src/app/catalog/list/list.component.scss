@@ -3,18 +3,20 @@ mat-paginator {
   font-size: initial;
 }
 
+.dummy {
+  background-color: #f5f5f5
+}
+
+.dummy, mat-card {
+  min-height: 310px;
+}
+
 mat-card {
   margin-top: 10px;
   border: 1px solid transparent;
 }
 
 mat-card-header {
-  height: 75px;
-  margin: 0;
-}
-
-mat-card-header > div.mat-card-header-text {
-  margin: 0;
 }
 
 mat-card-title, mat-card-subtitle {
@@ -26,12 +28,24 @@ mat-card-title, mat-card-subtitle {
 
 mat-card-title {
   font-size: 14px !important;
-  height: 30px;
+  padding-bottom: 10px;
+  margin: 0 !important;
 }
 
 mat-card-subtitle, .mat-cart-subtitle {
   text-align: right;
-  margin-bottom: 10px;
+}
+
+.category-title, .subcategory-title, .common-rating {
+  margin: 0 !important;
+}
+
+.category-title button, .subcategory-title button {
+  padding: 0;
+}
+
+.common-rating {
+  padding-top: 5px;
 }
 
 mat-card-subtitle > button {
@@ -51,20 +65,21 @@ mat-card:hover {
   font-size: 30px;
 }
 
-#description {
+.description {
   width: 120px;
   text-align: end;
+  font-size: 12px;
 }
 
-#description span {
+.description span {
   display: block;
-  //padding-bottom: 10px;
 }
 
 // category image
 .example-header-image {
   width: 50px;
   text-align: center;
+  margin-right: 16px;
 }
 
 .cat-img {
@@ -75,14 +90,16 @@ mat-card:hover {
 
 // product image
 .mat-card-image {
-  max-height: 100px;
-  max-width: 100px;
-  margin: 10px 0 0 0 !important;
+  height: 100%;
+  width: 100px;
+  object-fit: contain;
+  margin: 0 !important;
   cursor: pointer;
 }
 
 .mat-card-content {
-  margin: 10px 0 10px 0 !important;
+  margin: 0 !important;
+  height: 110px;
 }
 
 mat-card-actions {
@@ -112,27 +129,23 @@ button.mat-stroked-button.price {
   margin: 0 !important;
 }
 
-.star {
-  font-size: 1.3rem;
+.star-background {
+  font-size: 1.2rem;
   position: relative;
   display: inline-block;
   color: #b0c4de;
 }
 
-.star .full, .star .half {
-  color: #1e90ff;
-}
-
-.star .half {
+.star-background .full, .star-foreground {
   position: absolute;
   display: inline-block;
   overflow: hidden;
+  color: #1e90ff;
+}
+.read .star-background {
+  //font-size: 1.1em;
 }
 
-.category-title {
-  margin: 0 !important;
-}
-
-.subcategory-title {
-  margin: 0 !important;
+.star-read {
+  color: #b01c1c;
 }

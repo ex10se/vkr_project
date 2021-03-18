@@ -6,7 +6,7 @@ import {BasketService} from '../../basket.service';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {ViewportScroller} from '@angular/common';
 import {LoginService} from '../../login.service';
-import {faCartPlus} from '@fortawesome/free-solid-svg-icons';
+import {faCartArrowDown, faCartPlus} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -46,36 +46,42 @@ export class ListComponent implements OnInit, AfterViewInit {
       this.apiService.getUserRatings(this.user).subscribe((res: any) => {
         this.userRatings = res;
       });
+      this.apiService.getOrderList(this.user).subscribe((rez: any) => {
+        this.orders = rez;
+      });
     });
-
+    this.basketService.basket$.subscribe(data => {
+      this.basket = data;
+    });
   }
 
+  loading = true;
   faCartPlus = faCartPlus;
+  faCartArrowDown = faCartArrowDown;
   isAuth = false;
   user = 0;
   pageYoffset = 0;
   @ViewChild(MatPaginator) paginator: MatPaginator | any;
+  pageEvent?: PageEvent;
   products: Array<any> = [];
   productsCount?: number;
-  limit = 50;
+  limit = 24;
   offset = 0;
-  pageEvent: any;
   lowValue = 0;
-  highValue = 50;
+  highValue = 24;
   currentState = '';
   param = '';
   userRatings: any;
-
-  @HostListener('window:scroll', ['$event']) onScroll(event: PageEvent): void {
-    this.pageYoffset = window.pageYOffset;
-  }
+  orders: any;
+  basket: any;
+  rating = 0;
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
-    this.paginator.page.subscribe(
-      (event: any) => {
+    this.paginator.page.subscribe((event: any) => {
+        this.loading = true;
         if (this.currentState === 'cat') {
           this.doGetProductList({cat: this.param}, event.pageSize, this.lowValue);
         } else if (this.currentState === 'subcat') {
@@ -100,17 +106,39 @@ export class ListComponent implements OnInit, AfterViewInit {
         for (const product of this.products) {
           product.amount = 1;
         }
-        console.log(this.products);
         this.productsCount = res.count;
       } else {
         this.router.navigate(['/'], {replaceUrl: true}).then();
       }
+      this.loading = false;
     });
+  }
+
+  productUserRating(product: number): number {
+    try {
+      this.rating = this.userRatings.find((p: any) => p.product_id === product).rating;
+    } catch (TypeError) {
+      this.rating = 0;
+    }
+    return this.rating;
   }
 
   doSetProductRating(user: number, product: number, rating: number): void {
     this.apiService.setProductRating(user, product, rating).subscribe(() => {
+      this.rating = rating;
     });
+  }
+
+  hasProductBeenBought(product: number): boolean {
+    try {
+      return !!this.orders.find((o: any) => o.products.find((p: any) => p.product.id === product));
+    } catch (TypeError) {
+      return false;
+    }
+  }
+
+  isInBasket(product: number): boolean {
+    return this.basket.length > 0 ? this.basketService.isInBasket(product) : false;
   }
 
   doAddToBasket(id: number, amount: any): void {
@@ -121,16 +149,8 @@ export class ListComponent implements OnInit, AfterViewInit {
     this.scroll.scrollToPosition([0, 0]);
   }
 
-  onPlus(product: any): void {
-    product.amount += 1;
-    this.basketService.addToBasket(product.id, product.amount);
-  }
-
-  onMinus(product: any): void {
-    if (product.amount > 1) {
-      product.amount -= 1;
-    }
-    this.basketService.addToBasket(product.id, product.amount);
+  @HostListener('window:scroll', ['$event']) onScroll(): void {
+    this.pageYoffset = window.pageYOffset;
   }
 
   onWheel(product: any, event: WheelEvent): void {

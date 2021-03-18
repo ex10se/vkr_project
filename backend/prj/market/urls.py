@@ -5,7 +5,6 @@ from market.views.basket import BasketInfoView, BasketSubmitView
 from market.views.category import CategoryListView
 from market.views.google_auth import GoogleView
 from market.views.init import InitView
-from market.views.notification import NotifyListView
 from market.views.order import OrderView
 from market.views.product import ProductListView
 from market.views.user_profile import UserProfileView
@@ -21,6 +20,6 @@ urlpatterns = [
     path('user_profile', UserProfileView.as_view()),
     path('google_auth', GoogleView.as_view()),
     path('init', InitView.as_view()),
-    path('notification_list', NotifyListView.as_view()),
+    # path('notification_list', NotifyListView.as_view()),
     path('basket_submit', BasketSubmitView.as_view()),
 ]

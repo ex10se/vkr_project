@@ -1,12 +1,19 @@
 import os
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'eq9@1e6mgw+!6*@ze*8ll^9&&dcx^j8gn+u+-4v92xyc+^s#1y'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+from google.oauth2 import service_account
+from prj.secrets.secrets import DB_PASSWORD, DJANGO_SECRET_KEY
 
-INSTALLED_APPS = [
+BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = DJANGO_SECRET_KEY
+# SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+DEBUG = True
+# DEBUG = False
+# DEBUG = int(os.environ.get("DEBUG", default=0))
+ALLOWED_HOSTS = ('*',)
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
+INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -15,15 +22,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_yasg',
     'channels',
-    'easy_thumbnails',
-    'image_cropping',
     'corsheaders',
     'rest_framework.authtoken',
     'webpack_loader',
     'market.apps.MarketConfig',
-]
+)
 
-MIDDLEWARE = [
+MIDDLEWARE = (
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -32,11 +37,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+)
 
 ROOT_URLCONF = 'prj.urls'
 
-TEMPLATES = [
+TEMPLATES = (
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates'],
@@ -50,7 +55,7 @@ TEMPLATES = [
             ],
         },
     },
-]
+)
 
 WSGI_APPLICATION = 'prj.wsgi.application'
 ASGI_APPLICATION = 'prj.asgi.application'
@@ -65,24 +70,17 @@ ASGI_APPLICATION = 'prj.asgi.application'
 
 # [START db_setup]
 if os.getenv('GAE_APPLICATION', None):
-    # Running on production App Engine, so connect to Google Cloud SQL using
-    # the unix socket at /cloudsql/<your-cloudsql-connection string>
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
+            'ENGINE': 'django.db.backends.postgresql',
             'HOST': '/cloudsql/recommendme-303303:europe-north1:postgres-1',
-            'USER': 'postgres',
-            'PASSWORD': '1031363',
             'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': DB_PASSWORD,
+            # 'PASSWORD': os.environ.get("DB_PASSWORD"),
         }
     }
 else:
-    # Running locally so connect to either a local MySQL instance or connect to
-    # Cloud SQL via the proxy. To start the proxy via command line:
-    #
-    #     $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
-    #
-    # See https://cloud.google.com/sql/docs/mysql-connect-proxy
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -90,7 +88,8 @@ else:
             'PORT': '5678',
             'NAME': 'postgres',
             'USER': 'postgres',
-            'PASSWORD': '1031363',
+            'PASSWORD': DB_PASSWORD,
+            # 'PASSWORD': os.environ.get("DB_PASSWORD"),
         }
     }
 # [END db_setup]
@@ -104,20 +103,12 @@ if os.getenv('TRAMPOLINE_CI', None):
         }
     }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+AUTH_PASSWORD_VALIDATORS = (
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'}
+)
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Moscow'
@@ -125,11 +116,16 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+# STATICFILES_FINDERS = [
+#     'django.contrib.staticfiles.finders.FileSystemFinder',  # searches in STATICFILES_DIRS
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',  # searches in STATIC subfolder of each app
+# ]
+
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'assets'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = (
+    BASE_DIR / 'assets',
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -138,7 +134,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'PAGE_SIZE': 50,
+    'PAGE_SIZE': 24,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
@@ -148,8 +144,6 @@ REST_FRAMEWORK = {
 # django-cors-headers
 CORS_ALLOW_ALL_ORIGINS = True
 
-BACKEND_URL = 'http://127.0.0.1:8000'
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
@@ -158,7 +152,19 @@ CHANNEL_LAYERS = {
 
 WEBPACK_LOADER = {
     'DEFAULT': {
+        'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': 'angular/',
-        'STATS_FILE': BASE_DIR / 'static/webpack-stats-angular.json',
+        'STATS_FILE': BASE_DIR / 'assets/webpack-stats-angular.json',
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
     }
 }
+
+# media files into google cloud storage bucket
+GS_BUCKET_NAME = 'recommendme-303303.appspot.com'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+# STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    BASE_DIR / "prj/secrets/recommendme-303303-b9ec319ab4d9.json"
+)

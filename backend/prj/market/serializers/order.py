@@ -27,3 +27,5 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'consumer', 'created_at', 'updated_at', 'status', 'products', 'total_price')
 
 
+class OrderRequestSerializer(serializers.Serializer):
+    consumer = serializers.IntegerField(min_value=1)

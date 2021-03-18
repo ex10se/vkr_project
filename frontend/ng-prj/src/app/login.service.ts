@@ -8,7 +8,6 @@ export class LoginService {
 
   storage: any;
   isAuth$ = new BehaviorSubject(false);
-  // user$ = new BehaviorSubject(false);
 
   constructor() {
     this.storage = localStorage;
@@ -25,14 +24,11 @@ export class LoginService {
   login(user: any): void {
     this.setToken(user.token);
     this.isAuth$.next(true);
-    // this.user$.next(user.user);
-    // console.log(user);
   }
 
   logout(): void {
     this.isAuth$.next(false);
     this.storage.removeItem('access_token');
-    // this.user$.next(false);
   }
 
 }

@@ -5,16 +5,18 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build watch": "ng build --watch",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
+    "build:watch": "ng build --watch",
+    "build:prod": "ng build --prod",
+    "build:prod:watch": "ng build --prod --watch",
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",
     "dev:ssr": "ng run ng-prj:serve-ssr",
     "serve:ssr": "node dist/ng-prj/server/main.js",
     "build:ssr": "ng build --prod && ng run ng-prj:server:production",
     "build:client-and-server-bundles": "ng build --prod && ng run ng-prj:server:production --bundleDependencies all",
-    "prerender": "ng run ng-prj:prerender"
+    "prerender": "ng run ng-prj:prerender",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {

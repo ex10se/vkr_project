@@ -37,13 +37,15 @@ export class ListComponent implements OnInit, OnDestroy {
         this.basketService.basket$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
           for (const product of this.basket) {
             product.amount = data.find((x: { product: any; }) => x.product === product.id).amount;
-            product.price_multiple = product.get_price * product.amount;
+            product.price_multiple = product.price * product.amount;
           }
         });
       }
+      this.loading = false;
     });
   }
 
+  loading = false;
   faTrashAlt = faTrashAlt;
   basket: Array<any> = [];
   isAuth = false;
@@ -53,6 +55,7 @@ export class ListComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
 
   ngOnInit(): void {
+    this.loading = true;
   }
 
   ngOnDestroy(): void {
@@ -88,6 +91,7 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   submitBasket(): void {
+    this.loading = true;
     const reqData = {products: Array<object>()};
     for (const p of this.basket) {
       reqData.products.push({product: p.id, amount: p.amount});
@@ -96,6 +100,7 @@ export class ListComponent implements OnInit, OnDestroy {
       this.clearBasket();
       this.isBasketSubmitted = this.basketService.isSubmitted = true;
     });
+    this.loading = false;
   }
 
   onPlus(product: any): void {

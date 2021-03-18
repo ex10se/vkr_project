@@ -9,6 +9,7 @@ import {LoginService} from '../../login.service';
 })
 export class ListComponent implements OnInit {
 
+  loading = false;
   isAuth = false;
   userId = 0;
   orders: any = [];
@@ -24,6 +25,7 @@ export class ListComponent implements OnInit {
           this.apiService.getOrderList(this.userId).subscribe((rez: any) => {
             this.orders = rez;
             this.orders.sort((a: any, b: any) => b.updated_at.localeCompare(a.updated_at));
+            this.loading = false;
           });
         });
       }
@@ -31,6 +33,7 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loading = true;
   }
 
 }

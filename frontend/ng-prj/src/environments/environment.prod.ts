@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-    backendUrl: 'http://localhost:8000/',
+  backendUrl: 'https://recommendme-303303.ew.r.appspot.com/',
+  socketUrl: 'ws://recommendme-303303.ew.r.appspot.com'
 };

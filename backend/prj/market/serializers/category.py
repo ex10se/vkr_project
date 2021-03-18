@@ -10,16 +10,17 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     @staticmethod
     def get_subcategory(obj):
         out = []
-        for item in Subcategory.objects.filter(category=obj):
+        subcategories = Subcategory.objects.filter(category=obj).prefetch_related('category')
+        for item in subcategories:
             out.append(SubcategorySerializer(item).data)
         return out
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'image_url', 'subcategory')
+        fields = ('id', 'name', 'image', 'subcategory')
 
 
 class CategoryPartialSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
-        fields = ('id', 'name', 'image_url')
+        fields = ('id', 'name', 'image')

@@ -55,6 +55,7 @@ export class AppComponent {
   }
 
   private unsubscribe = new Subject();
+  logoSrc = 'assets/images/logo.png';
 
   signInWithGoogle(): void {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(res => {

@@ -1,4 +1,4 @@
-{% load render_bundle from webpack_loader %}
+{% load webpack_loader %}
 
 <!doctype html>
 <html lang="ru">
@@ -16,11 +16,12 @@
 <app-root>
     Loading...
 </app-root>
-
 {% render_bundle 'runtime' %}
 {% render_bundle 'polyfills' %}
 {% render_bundle 'styles' %}
-{% render_bundle 'vendor' %}
+{% if debug %}
+    {% render_bundle 'vendor' %}
+{% endif %}
 {% render_bundle 'main' %}
 </body>
 </html>

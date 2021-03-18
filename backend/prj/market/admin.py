@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from . import models
 from .filters import RatingListFilter, CommonRatingListFilter
-from .models import OrderProduct, Notification
+from .models import OrderProduct, Recommendation
 
 
 class UserProfileAdmin(admin.ModelAdmin):
@@ -24,7 +24,7 @@ class SubcategoryAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'category', 'subcategory', 'get_small_image')
+    list_display = ('__str__', 'category', 'subcategory', 'image_tag')
     search_fields = ('id', 'name')
     list_filter = ('category', 'subcategory')
 
@@ -53,8 +53,12 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'consumer', 'created_at', 'total_price')
 
 
-class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('product', 'consumer')
+# class NotificationAdmin(admin.ModelAdmin):
+#     pass
+
+
+class RecommendationAdmin(admin.ModelAdmin):
+    pass
 
 
 admin.site.register(models.UserProfile, UserProfileAdmin)
@@ -64,4 +68,5 @@ admin.site.register(models.Product, ProductAdmin)
 admin.site.register(models.Store, StoreAdmin)
 admin.site.register(models.UserRating, UserRatingAdmin)
 admin.site.register(models.Order, OrderAdmin)
-admin.site.register(Notification, NotificationAdmin)
+# admin.site.register(Notification, NotificationAdmin)
+admin.site.register(Recommendation, RecommendationAdmin)

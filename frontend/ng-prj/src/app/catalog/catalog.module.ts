@@ -10,6 +10,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 import {NgbRatingModule} from '@ng-bootstrap/ng-bootstrap';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
@@ -36,7 +37,8 @@ const routes: Routes = [
     NgbRatingModule,
     FontAwesomeModule,
     MatButtonToggleModule,
-    CrystalLightboxModule
+    MatProgressSpinnerModule,
+    CrystalLightboxModule,
   ],
   exports: [
     ListComponent
