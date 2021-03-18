@@ -1,12 +1,18 @@
 # reCommendme - быстрая доставка продуктов
-#### (Windows 10)
 Static-файлы хранятся в проекте из-за особенностей webpack. Media-файлы хранятся в Google Cloud Storage.
+
+[Результат](https://recommendme-303303.ew.r.appspot.com/)
 ## Подготовка
     git clone https://github.com/ex10se/vkr_project.git
     cd vkr_project/backend/prj
 
 ## Разработка
 ### 1. Django сервер разработки
+Для базы данных Google Cloud SQL необходимо скачать cloud_sql_proxy и запустить с параметрами
+
+    cloud_sql_proxy -instances=<INSTANCE-NAME>=tcp:5678
+Запуск сервера:
+
     virtualenv -p python venv
     cd venv/Scripts
     activate.bat
@@ -15,6 +21,8 @@ Static-файлы хранятся в проекте из-за особенно�
     python manage.py migrate
     python manage.py createsuperuser
     python manage.py runserver
+
+При ошибке "WebpackBundleLookupError at /catalog. Cannot resolve bundle vendor." запустить пересборку Angular (ng build).
 ### 2. Angular, варианты:
 #### 2.1. Запуск автоматической пересборки webpack'а для Django
 Установить Node.js, затем:
@@ -31,7 +39,7 @@ Static-файлы хранятся в проекте из-за особенно�
 Запуск:
 
     ng serve
-## Деплой в Google App Engine
+## Деплой в Google App Engine (Windows 10)
 В backend/prj/prj/settings.py: DEBUG=False,
 
     cd bin
