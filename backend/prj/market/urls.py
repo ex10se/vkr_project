@@ -20,6 +20,5 @@ urlpatterns = [
     path('user_profile', UserProfileView.as_view()),
     path('google_auth', GoogleView.as_view()),
     path('init', InitView.as_view()),
-    # path('notification_list', NotifyListView.as_view()),
     path('basket_submit', BasketSubmitView.as_view()),
 ]

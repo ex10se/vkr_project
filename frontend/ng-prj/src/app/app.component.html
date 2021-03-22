@@ -39,7 +39,7 @@
           </button>
           <mat-menu #subitem="matMenu">
             <button
-              *ngFor="let subitem of item['subcategory']"
+              *ngFor="let subitem of item['subcategories']"
               [routerLink]="['catalog/subcat',subitem.id]"
               mat-menu-item>
               {{ subitem.name }}

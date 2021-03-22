@@ -31,7 +31,7 @@ export class ListComponent implements OnInit, AfterViewInit {
       } else if (params.hasOwnProperty('SubCatId')) {
         this.doGetProductList({subcat: params.SubCatId}, this.limit, this.offset);
         this.currentState = 'subcat';
-        this.param = params.SubcatId;
+        this.param = params.SubCatId;
       } else {
         this.doGetProductList({}, this.limit, this.offset);
         this.currentState = 'all';

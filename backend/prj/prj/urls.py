@@ -4,9 +4,8 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework import permissions, routers
+from rest_framework import permissions
 
-from market.views.category import CategoryViewSet
 from market.views.index import index
 from prj.settings import DEBUG
 
@@ -25,8 +24,6 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-router = routers.DefaultRouter()
-router.register(r'category', CategoryViewSet)
 
 urlpatterns = [
     path('', index),
@@ -35,7 +32,6 @@ urlpatterns = [
     re_path(r'^profile.*', index),
     re_path(r'^order.*', index),
     path('v1/', include([
-        path('generic/', include(router.urls)),
         path('market/', include('market.urls')),
     ])),
 ]

@@ -18,7 +18,7 @@ class OrderSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_products(obj):
         out = []
-        for i in OrderProduct.objects.filter(order=obj):
+        for i in OrderProduct.objects.filter(order=obj).prefetch_related('product'):
             out.append(OrderProductSerializer(i).data)
         return out
 

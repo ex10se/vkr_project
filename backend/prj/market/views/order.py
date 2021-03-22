@@ -1,5 +1,6 @@
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,7 +15,7 @@ class OrderView(APIView):
     """
     # permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(request_body=OrderRequestSerializer, responses={200: OrderSerializer})
+    @swagger_auto_schema(request_body=OrderRequestSerializer)
     def post(self, request):
-        order = Order.objects.filter(consumer=request.data['consumer']).prefetch_related('orderproduct_set')
-        return Response(OrderSerializer(order, many=True).data)
+        orders = Order.objects.filter(consumer=request.data['consumer'])
+        return Response(OrderSerializer(orders, many=True).data)

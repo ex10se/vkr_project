@@ -24,15 +24,9 @@ class SubcategoryAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'category', 'subcategory', 'image_tag')
+    list_display = ('__str__', 'category', 'subcategory', 'common_rating', 'image_tag')
     search_fields = ('id', 'name')
-    list_filter = ('category', 'subcategory')
-
-
-class StoreAdmin(admin.ModelAdmin):
-    list_display = ('product', 'price', 'common_rating')
-    search_fields = ('product__name',)
-    list_filter = (CommonRatingListFilter,)
+    list_filter = (CommonRatingListFilter, 'subcategory')
     readonly_fields = ('common_rating',)
 
 
@@ -53,10 +47,6 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'consumer', 'created_at', 'total_price')
 
 
-# class NotificationAdmin(admin.ModelAdmin):
-#     pass
-
-
 class RecommendationAdmin(admin.ModelAdmin):
     pass
 
@@ -65,8 +55,6 @@ admin.site.register(models.UserProfile, UserProfileAdmin)
 admin.site.register(models.Category, CategoryAdmin)
 admin.site.register(models.Subcategory, SubcategoryAdmin)
 admin.site.register(models.Product, ProductAdmin)
-admin.site.register(models.Store, StoreAdmin)
 admin.site.register(models.UserRating, UserRatingAdmin)
 admin.site.register(models.Order, OrderAdmin)
-# admin.site.register(Notification, NotificationAdmin)
 admin.site.register(Recommendation, RecommendationAdmin)

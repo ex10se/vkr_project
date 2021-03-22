@@ -11,7 +11,7 @@ class ProductListView(ListModelMixin, GenericAPIView):
         API endpoint для списка продуктов
     """
 
-    queryset = Product.objects.all().order_by('id').prefetch_related('category', 'subcategory', 'store_set')
+    queryset = Product.objects.all().prefetch_related('subcategory')
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
 

@@ -255,10 +255,18 @@ https://senior.ua/articles/rendering-na-storone-servera-v-angular
 
 
 
+## Оптимизация базы данных (слишком долгие запросы)
+- Объединил таблицы Product и Store - GET-запрос Product стал выполняться за 300 мс вместо 1200 мс!
+
+
+
+
+
+
+
+
+## Всякое
 Поменял в angular.json "deployUrl": "/static/angular/" на "deployUrl": "/" для удобства разработки
-
-
-
 
 Для мобильного приложения на ангуляре можно Ionic
 

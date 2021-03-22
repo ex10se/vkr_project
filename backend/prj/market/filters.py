@@ -1,17 +1,17 @@
 from django.contrib.admin import SimpleListFilter
 from django_filters import FilterSet, NumberFilter, CharFilter
 
-from market.models import Product
+from market.models import Product, Order
 
 
 class ProductFilter(FilterSet):
-    category = NumberFilter()
+    category = NumberFilter(label='Category', field_name='subcategory__category')
     subcategory = NumberFilter()
     searchkey = CharFilter(field_name='name', lookup_expr='contains')
 
     class Meta:
         model = Product
-        fields = ('category', 'searchkey', 'subcategory')
+        fields = ('searchkey', 'subcategory')
 
 
 rating_lookups = (('score >= 4.5', 'Excellent'),

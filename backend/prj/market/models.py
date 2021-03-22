@@ -13,6 +13,11 @@ class UserProfile(User):
     def __str__(self):
         return self.username
 
+    @property
+    def purchased_products(self):
+        op = OrderProduct.objects.filter(order__consumer=1239).values_list('product', flat=True).distinct()
+        return Product.objects.filter(id__in=op)
+
     class Meta:
         verbose_name = 'UserProfile'
         verbose_name_plural = 'UserProfiles'
@@ -38,6 +43,10 @@ class Category(models.Model):
         except ValueError:
             return None
 
+    @property
+    def subcategories(self):
+        return self.subcategory_set.values()
+
 
 class Subcategory(models.Model):
     name = models.CharField(max_length=250, default='', unique=True)
@@ -54,50 +63,32 @@ class Subcategory(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=250, default='', unique=True)
     image = models.ImageField(upload_to='product', null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True, blank=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    common_rating = models.DecimalField(max_digits=2, decimal_places=1, default=0, null=True)  # общий рейтинг
 
     def __str__(self):
         return f'{self.name} ({self.price} ₽)'
 
     @property
+    def category(self):
+        return self.subcategory.category
+
+    @property
     def image_tag(self):
         return mark_safe(f'<img src="{self.image.url}" style="width: 100px; height: 100px; object-fit: cover;">')
-
-    @property
-    def price(self):
-        return Store.objects.select_related('product').get(product_id=self.id).price
-
-    @property
-    def common_rating(self):
-        return Store.objects.select_related('product').get(product_id=self.id).common_rating
 
     class Meta:
         verbose_name = 'product'
         verbose_name_plural = 'products'
-        ordering = ('-id',)
-
-
-class Store(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    common_rating = models.DecimalField(max_digits=2, decimal_places=1, default=0, null=True)  # общий рейтинг
-
-    def __str__(self):
-        return f'{self.product.name} {self.price} ₽, score {self.common_rating})'
-
-    class Meta:
-        verbose_name = 'store'
-        verbose_name_plural = 'store'
         ordering = ('id',)
 
 
 # не получилось вытащить в отдельный файл signals
-# расчет общего (среднего) рейтинга продукта при сохранении объекта модели Store
-@receiver(signals.pre_save, sender=Store)
-def calc_rating(sender, instance, **kwargs): # noqa
-    avg_rating = UserRating.objects.filter(
-        product=instance.product).prefetch_related('user', 'product').aggregate(Avg('rating'))['rating__avg']
+# расчет общего (среднего) рейтинга продукта при сохранении объекта модели Product
+@receiver(signals.pre_save, sender=Product)
+def calc_rating(sender, instance, **kwargs):  # noqa
+    avg_rating = UserRating.objects.filter(product=instance.id).aggregate(Avg('rating'))['rating__avg']
     instance.common_rating = avg_rating if avg_rating else 0
 
 
@@ -124,7 +115,7 @@ class Order(models.Model):
     consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=20, default='new', choices=STATUS)
+    status = models.CharField(max_length=20, choices=STATUS, default='new')
 
     class Meta:
         verbose_name = 'order'
@@ -157,24 +148,14 @@ class OrderProduct(models.Model):
         return UserRating.objects.get(user=self.consumer, product=self.product).rating
 
 
-# class Notification(models.Model):
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-#     consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#
-#     class Meta:
-#         verbose_name = 'Notification'
-#         verbose_name_plural = 'Notifications'
-
-
 class Recommendation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     prediction = models.DecimalField(max_digits=3, decimal_places=2, default=0)
 
     class Meta:
-        verbose_name = 'Recommendation'
-        verbose_name_plural = 'Recommendations'
+        verbose_name = 'recommendation'
+        verbose_name_plural = 'recommendations'
 
     @property
     def user_rating(self):
@@ -182,4 +163,4 @@ class Recommendation(models.Model):
 
     @property
     def common_rating(self):
-        return Store.objects.get(product=self.product).common_rating
+        return Product.objects.get(product=self.product).common_rating

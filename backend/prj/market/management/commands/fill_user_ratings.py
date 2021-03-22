@@ -2,7 +2,7 @@ import random
 
 from django.core.management.base import BaseCommand
 
-from market.models import UserRating, Store, OrderProduct
+from market.models import UserRating, Product, OrderProduct
 
 
 class Command(BaseCommand):
@@ -16,7 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['flush']:
             UserRating.objects.all().delete()
-            Store.objects.all().update(common_rating=0)
+            Product.objects.all().update(common_rating=0)
             print('Deleted all ratings')
 
         print('The process is started...')
@@ -32,6 +32,6 @@ class Command(BaseCommand):
                 ur.rating = random.randint(0, 5)
                 ur.save()
             # расчет общего рейтинга
-            Store.objects.get(product=op.product).save()
+            Product.objects.get(pk=op.product.id).save()
 
         print(f'Done, ratings were added')
