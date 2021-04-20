@@ -7,9 +7,7 @@ from prj.secrets.secrets import DB_PASSWORD, DJANGO_SECRET_KEY
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = DJANGO_SECRET_KEY
 # SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-DEBUG = True
-# DEBUG = False
-# DEBUG = int(os.environ.get("DEBUG", default=0))
+DEBUG = int(os.environ.get("DJANGO_DEBUG", default=1))
 ALLOWED_HOSTS = ('*',)
 # ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
@@ -20,6 +18,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'drf_yasg',
     'channels',
     'corsheaders',
@@ -73,11 +72,10 @@ if os.getenv('GAE_APPLICATION', None):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'HOST': '/cloudsql/recommendme-303303:europe-north1:postgres-1',
+            'HOST': '/cloudsql/recme-310114:europe-north1:recmedb',
             'NAME': 'postgres',
             'USER': 'postgres',
             'PASSWORD': DB_PASSWORD,
-            # 'PASSWORD': os.environ.get("DB_PASSWORD"),
         }
     }
 else:
@@ -89,7 +87,6 @@ else:
             'NAME': 'postgres',
             'USER': 'postgres',
             'PASSWORD': DB_PASSWORD,
-            # 'PASSWORD': os.environ.get("DB_PASSWORD"),
         }
     }
 # [END db_setup]
@@ -160,11 +157,15 @@ WEBPACK_LOADER = {
     }
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # media files into google cloud storage bucket
-GS_BUCKET_NAME = 'recommendme-303303.appspot.com'
+GS_BUCKET_NAME = 'recme-310114.appspot.com'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 # STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    BASE_DIR / "prj/secrets/recommendme-303303-b9ec319ab4d9.json"
+    BASE_DIR / "prj/secrets/recme-310114-b65af041e906.json"
 )
+
+SITE_ID = 1

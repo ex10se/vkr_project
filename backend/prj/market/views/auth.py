@@ -11,7 +11,7 @@ from market.serializers.user_profile import UserProfileSerializer
 
 class AuthView(APIView):
     """
-        Авторизация пользователя.
+    Авторизация пользователя
     """
 
     @swagger_auto_schema(request_body=LoginRequestSerializer)

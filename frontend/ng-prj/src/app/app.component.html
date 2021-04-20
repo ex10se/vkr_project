@@ -3,15 +3,18 @@
     <a href="#" [routerLink]="'catalog'"><img id="logo" [src]=logoSrc
                                               alt="logo" (error)="logoSrc='static/angular/assets/images/logo.png'"></a>
     <div fxLayout="row" fxFlex="100" fxLayoutAlign="end center" fxLayoutGap="10px">
-<!--      {{basket|json}}-->
+      <!--      {{basket|json}}-->
       <button mat-raised-button [routerLink]="'basket'" color="primary" *ngIf="basket.length > 0"
               matBadge="{{ basket.length }}" matBadgePosition="before" matBadgeColor="accent">
         Корзина
       </button>
 
       <mat-button-toggle-group class="catalog">
+        <mat-button-toggle [routerLink]="'catalog/popular'">
+          Популярное
+        </mat-button-toggle>
         <mat-button-toggle [routerLink]="'catalog'">
-          Каталог
+          Все товары
         </mat-button-toggle>
         <mat-button-toggle class="drop-down-button" [matMenuTriggerFor]="category">
           <fa-icon [icon]="faBars"></fa-icon>
@@ -23,8 +26,8 @@
           <fa-icon [icon]="faGoogle"></fa-icon>
         </button>
         <mat-button-toggle-group class="profile-orders">
-        <mat-button-toggle *ngIf="isAuth" [routerLink]="'profile'">Профиль</mat-button-toggle>
-        <mat-button-toggle *ngIf="isAuth" [routerLink]="'orders'">Заказы</mat-button-toggle>
+          <mat-button-toggle *ngIf="isAuth" [routerLink]="'profile'">Профиль</mat-button-toggle>
+          <mat-button-toggle *ngIf="isAuth" [routerLink]="'orders'">Заказы</mat-button-toggle>
         </mat-button-toggle-group>
         <button *ngIf="isAuth" mat-raised-button (click)="signOut()" color="warn">Выход</button>
       </ng-container>
@@ -51,8 +54,8 @@
     </div>
   </div>
 
-    <router-outlet>
-    </router-outlet>
+  <router-outlet>
+  </router-outlet>
 
   <div id="app-footer" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="20px" fxFlex="40px">
     @Copyright reCommendme | powered by Angular & Django

@@ -7,12 +7,14 @@ from market.views.google_auth import GoogleView
 from market.views.init import InitView
 from market.views.order import OrderView
 from market.views.product import ProductListView
+from market.views.recommender import PopularProductListView
 from market.views.user_profile import UserProfileView
 from market.views.user_rating import UserRatingView
 
 urlpatterns = [
     path('userlogin', AuthView.as_view()),
     path('product_list', ProductListView.as_view()),
+    path('popular_products', PopularProductListView.as_view()),
     path('category_list', CategoryListView.as_view()),
     path('basket_list', BasketInfoView.as_view()),
     path('order_list', OrderView.as_view()),

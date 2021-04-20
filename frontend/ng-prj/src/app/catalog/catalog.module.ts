@@ -19,6 +19,7 @@ import {CrystalLightboxModule} from '@crystalui/angular-lightbox';
 
 const routes: Routes = [
   {path: '', component: ListComponent},
+  {path: ':popular', component: ListComponent},
   {path: 'cat/:catId', component: ListComponent},
   {path: 'subcat/:SubCatId', component: ListComponent},
 ];

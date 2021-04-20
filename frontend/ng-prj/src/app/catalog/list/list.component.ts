@@ -32,6 +32,10 @@ export class ListComponent implements OnInit, AfterViewInit {
         this.doGetProductList({subcat: params.SubCatId}, this.limit, this.offset);
         this.currentState = 'subcat';
         this.param = params.SubCatId;
+      } else if (params.hasOwnProperty('popular')) {
+        this.doGetPopularProductList(this.limit, this.offset);
+        this.currentState = 'popular';
+        this.param = '';
       } else {
         this.doGetProductList({}, this.limit, this.offset);
         this.currentState = 'all';
@@ -86,6 +90,8 @@ export class ListComponent implements OnInit, AfterViewInit {
           this.doGetProductList({cat: this.param}, event.pageSize, this.lowValue);
         } else if (this.currentState === 'subcat') {
           this.doGetProductList({subcat: this.param}, event.pageSize, this.lowValue);
+        } else if (this.currentState === 'popular') {
+          this.doGetPopularProductList(event.pageSize, this.lowValue);
         } else {
           this.doGetProductList({}, event.pageSize, this.lowValue);
         }
@@ -110,6 +116,17 @@ export class ListComponent implements OnInit, AfterViewInit {
       } else {
         this.router.navigate(['/'], {replaceUrl: true}).then();
       }
+      this.loading = false;
+    });
+  }
+
+  doGetPopularProductList(limit: number, offset: number): void {
+    this.apiService.getPopularProductList(limit, offset).subscribe((res: any) => {
+      this.products = res.results;
+      for (const product of this.products) {
+        product.amount = 1;
+      }
+      this.productsCount = res.count;
       this.loading = false;
     });
   }

@@ -285,6 +285,13 @@ https://senior.ua/articles/rendering-na-storone-servera-v-angular
     pip list --format freeze > requirements.txt
 
 
-
-
     runserver --insecure
+
+
+# Recommender
+
+https://github.com/benfred/implicit/
+Установить средства сборки c++ в visual studio installer, затем:
+
+    pip install implicit
+

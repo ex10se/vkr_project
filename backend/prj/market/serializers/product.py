@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from market.models import Product
-from market.serializers.category import CategorySerializer, CategoryPartialSerializer
+from market.serializers.category import CategoryPartialSerializer
 from market.serializers.subcategory import SubcategorySerializer
 
 

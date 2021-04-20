@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--flush', action='store_true', help='Delete all existing users except SU and Staff')
-        parser.add_argument('users_count', nargs='?', type=int, default=1, help='Count of users to create (def. 1)')
+        parser.add_argument('-u', nargs='?', type=int, default=1, help='Count of users to create (def. 1)')
 
     def handle(self, *args, **options):
         if options['flush']:
@@ -23,9 +23,8 @@ class Command(BaseCommand):
 
         first_names_clear = [''.join(filter(str.isalpha, name.capitalize())) for name in NameDataset().first_names]
         last_names_clear = [''.join(filter(str.isalpha, name.capitalize())) for name in NameDataset().last_names]
-        count = options['users_count']
-        # TODO на деплой сделать password = None
-        password = '123'
+        count = options['u']
+        password = None
 
         print('The process is started...')
 

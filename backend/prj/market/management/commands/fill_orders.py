@@ -28,10 +28,10 @@ class Command(BaseCommand):
         for i in range(options['c']):
             order = Order()
             if options['i'] == -1:
-                order.consumer = random.choice(UserProfile.objects.all())
+                order.consumer = random.choice(UserProfile.objects.filter(is_superuser=False, is_staff=False))
             else:
                 order.consumer_id = options['i']
-            if options['s'] == -1:
+            if options['s'] == 'random':
                 order.status = random.choice([i[0] for i in Order.STATUS])  # случайный статус заказа
             else:
                 order.status = options['s']

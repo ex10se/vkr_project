@@ -82,7 +82,7 @@ export const interceptorProviders = [
           {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(
-              '1006137623360-702sli4kq5e8v4fiq4p536fdsq5qb1hq.apps.googleusercontent.com'
+              '639913863818-8braj8bdl2g5c7oblsabdn84j5qr3jo9.apps.googleusercontent.com'
             )
           }
         ]

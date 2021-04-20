@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  backendUrl: 'https://recommendme-303303.ew.r.appspot.com/',
-  socketUrl: 'ws://recommendme-303303.ew.r.appspot.com'
+  backendUrl: 'https://recme-310114.appspot.com/',
+  socketUrl: 'ws://recme-310114.appspot.com'
 };

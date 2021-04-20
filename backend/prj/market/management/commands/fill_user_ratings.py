@@ -22,15 +22,10 @@ class Command(BaseCommand):
         print('The process is started...')
         order_products = OrderProduct.objects.all()
         for op in order_products:
-            try:
-                # не перезаписываем рейтинг, если уже есть
-                op.user_rating
-            except UserRating.DoesNotExist:
-                ur = UserRating()
-                ur.product = op.product
-                ur.user = op.consumer
-                ur.rating = random.randint(0, 5)
-                ur.save()
+            ur = UserRating.objects.get_or_create(user=op.consumer, product=op.product)[0]
+            if op.user_rating == 0:
+                ur.rating = random.randint(1, 5)
+            ur.save()
             # расчет общего рейтинга
             Product.objects.get(pk=op.product.id).save()
 

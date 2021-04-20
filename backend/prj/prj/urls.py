@@ -7,7 +7,6 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 from market.views.index import index
-from prj.settings import DEBUG
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -15,15 +14,14 @@ schema_view = get_schema_view(
         default_version='v1',
         description='''
                       ### Product delivery system
-                      **Swagger** [here](/swagger/)  
-                      **ReDoc** [here](/redoc/)
+                      [**Swagger**](/swagger/)  
+                      [**ReDoc**](/redoc/)
                       ''',
         contact=openapi.Contact(email="pyth0n@inbox.ru"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
-
 
 urlpatterns = [
     path('', index),

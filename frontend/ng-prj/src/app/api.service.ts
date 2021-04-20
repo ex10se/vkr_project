@@ -25,6 +25,10 @@ export class ApiService {
       `?limit=${limit}&offset=${offset}`);
   }
 
+    getPopularProductList(limit: number, offset: number): Observable<object> {
+      return this.http.get(`${environment.backendUrl}v1/market/popular_products?limit=${limit}&offset=${offset}`);
+    }
+
   getCategoryList(): Observable<object> {
     return this.http.get(`${environment.backendUrl}v1/market/category_list`);
   }
@@ -35,7 +39,6 @@ export class ApiService {
   }
 
   setProductRating(user: number, product: number, rating: number): Observable<object> {
-    console.log(user, product, rating);
     return this.http.patch(`${environment.backendUrl}v1/market/user_rating_list`,
       {user, product, rating});
   }

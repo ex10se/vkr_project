@@ -1,7 +1,7 @@
 <div id="app-center" fxFlex="100" fxLayoutAlign="center" fxLayout="row wrap">
   <ng-container *ngIf="loading">
     <div fxFlex="70" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
-      <mat-card class="example-card dummy" *ngFor="let i of [].constructor(24)"
+      <mat-card class="dummy-product-card" *ngFor="let i of [].constructor(24)"
                 fxFlex="300px" fxLayout="column wrap" fxLayoutAlign="center center">
         <mat-spinner></mat-spinner>
       </mat-card>
@@ -11,10 +11,10 @@
 
   <ng-container *ngIf="!loading">
     <div class="products" fxFlex="70" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
-      <mat-card class="example-card" *ngFor="let product of products"
+      <mat-card class="product-card" *ngFor="let product of products"
                 fxFlex="300px" fxLayout="column wrap" fxLayoutAlign="center">
         <mat-card-header>
-          <div mat-card-avatar class="example-header-image">
+          <div mat-card-avatar class="category-image">
             <a href="#" [routerLink]="['/catalog/cat/',product['category']['id']]">
               <img class="cat-img" src="{{ product['category']['image'] }}"
                    [alt]="product['category']['name']" [title]="product['category']['name']">
@@ -48,7 +48,7 @@
               <ng-container *ngIf="productUserRating(product['id'])>0">Ваша оценка</ng-container>
               <ng-container *ngIf="rating===0">Оцените продукт</ng-container>
               <ngb-rating [(rate)]="rating" [max]="5" [readonly]=false
-                        (rateChange)="doSetProductRating(user, product['id'], rating)">
+                          (rateChange)="doSetProductRating(user, product['id'], rating)">
               <ng-template let-fill="fill">
                 <span class="star-background" [class.full]="fill === 100">
                   <span class="star-foreground" [style.width.%]="fill">&#x2764;</span>&#x2764;
@@ -84,6 +84,7 @@
       <!-- костыль для правильного margin-right последней карточки продукта на странице, вызванного fxLayoutGap="10px" -->
       <div></div>
     </div>
+
   </ng-container>
 
   <div fxFlex="100" fxLayoutAlign="end center" style="margin-top: 10px">

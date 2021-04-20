@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import signals, Avg
@@ -64,7 +65,7 @@ class Product(models.Model):
     name = models.CharField(max_length=250, default='', unique=True)
     image = models.ImageField(upload_to='product', null=True, blank=True)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True, blank=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.IntegerField()
     common_rating = models.DecimalField(max_digits=2, decimal_places=1, default=0, null=True)  # общий рейтинг
 
     def __str__(self):
@@ -145,22 +146,4 @@ class OrderProduct(models.Model):
 
     @property
     def user_rating(self):
-        return UserRating.objects.get(user=self.consumer, product=self.product).rating
-
-
-class Recommendation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    prediction = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-
-    class Meta:
-        verbose_name = 'recommendation'
-        verbose_name_plural = 'recommendations'
-
-    @property
-    def user_rating(self):
-        return UserRating.objects.get(user=self.user, product=self.product).rating
-
-    @property
-    def common_rating(self):
-        return Product.objects.get(product=self.product).common_rating
+        return UserRating.objects.get_or_create(user=self.consumer, product=self.product)[0].rating
