@@ -2,14 +2,12 @@ import os
 from pathlib import Path
 
 from google.oauth2 import service_account
-from prj.secrets.secrets import DB_PASSWORD, DJANGO_SECRET_KEY
+from prj.secrets.secrets import DJANGO_SECRET_KEY, DB_PASSWORD
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = DJANGO_SECRET_KEY
-# SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-DEBUG = int(os.environ.get("DJANGO_DEBUG", default=1))
-ALLOWED_HOSTS = ('*',)
-# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+DEBUG = int(os.environ.get('DEBUG', default=1))
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -165,7 +163,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 # STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    BASE_DIR / "prj/secrets/recme-310114-b65af041e906.json"
+    f"{BASE_DIR}/prj/secrets/recme-310114-b65af041e906.json"
 )
 
 SITE_ID = 1

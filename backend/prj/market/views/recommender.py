@@ -1,19 +1,21 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticated
 
-from market.filters import ProductFilter
-from market.models import OrderProduct, Product
+from common.predictions import get_predictions_list
+from market.models import Product
 from market.serializers.product import ProductSerializer
 
 
-class PopularProductListView(ListModelMixin, GenericAPIView):
+class RecommenderListView(ListModelMixin, GenericAPIView):
     """
-        API endpoint для списка самых популярных продуктов
+    Endpoint для получения рекомендуемых продуктов
     """
-
-    queryset = Product.objects.filter(id__in=OrderProduct.objects.all().values_list('product_id', flat=True))
+    permission_classes = (IsAuthenticated,)
     serializer_class = ProductSerializer
-    filterset_class = ProductFilter
+
+    def get_queryset(self):
+        return Product.objects.filter(id__in=get_predictions_list(self.request.user.id))
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

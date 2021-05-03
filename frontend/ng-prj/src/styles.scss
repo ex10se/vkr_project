@@ -61,6 +61,27 @@ table {
   max-width: 70%;
 }
 
+.star-background {
+  font-size: 1.2rem;
+  position: relative;
+  display: inline-block;
+  color: #b0c4de;
+}
+
+.star-background .full, .star-foreground {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: #1e90ff;
+}
+.read .star-background {
+  //font-size: 1.1em;
+}
+
+.star-read {
+  color: #b01c1c;
+}
+
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';

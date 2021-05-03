@@ -8,3 +8,5 @@ package-lock.json
 backend/prj/db.sqlite3
 /backend/prj/prj/secrets/
 /backend/prj/static/
+backend/prj/.env.dev.dev
+app.yaml

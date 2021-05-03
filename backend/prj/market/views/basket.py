@@ -12,6 +12,8 @@ from market.serializers.product import ProductSerializer
 class BasketInfoView(APIView):
     """
     Получение информации о товарах в корзине
+
+    POST /basket_list
     """
     permission_classes = [AllowAny]
 
@@ -26,20 +28,19 @@ class BasketInfoView(APIView):
 class BasketSubmitView(APIView):
     """
     Отправка корзины, создание заказа
+
+    POST /basket_submit
     """
     permission_classes = [IsAuthenticated]
 
-    @swagger_auto_schema(request_body=BasketSubmitRequestSerializer, responses={200: OrderSerializer})
+    @swagger_auto_schema(request_body=BasketSubmitRequestSerializer, responses={200: OrderSerializer()})
     def post(self, request):
         o = Order()
         o.consumer = request.user.userprofile
         o.save()
         for item in request.data.get('products'):
             product = Product.objects.get(pk=item['product'])
-            op = OrderProduct()
-            op.product = product
-            op.order = o
-            op.amount = item['amount']
-            op.save()
-
+            OrderProduct.objects.create(product=product,
+                                        order=o,
+                                        amount=item['amount'])
         return Response(OrderSerializer(o).data)

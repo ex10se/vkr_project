@@ -6,7 +6,7 @@ import {BasketService} from '../../basket.service';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {ViewportScroller} from '@angular/common';
 import {LoginService} from '../../login.service';
-import {faCartArrowDown, faCartPlus} from '@fortawesome/free-solid-svg-icons';
+import {faCartArrowDown, faCartPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -57,6 +57,10 @@ export class ListComponent implements OnInit, AfterViewInit {
     this.basketService.basket$.subscribe(data => {
       this.basket = data;
     });
+    this.apiService.getPredictions().subscribe((res: any) => {
+      this.predictedProducts = res.results;
+      console.log(this.predictedProducts);
+    });
   }
 
   loading = true;
@@ -68,6 +72,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator | any;
   pageEvent?: PageEvent;
   products: Array<any> = [];
+  predictedProducts: Array<any> = [];
   productsCount?: number;
   limit = 24;
   offset = 0;
@@ -79,6 +84,8 @@ export class ListComponent implements OnInit, AfterViewInit {
   orders: any;
   basket: any;
   rating = 0;
+  searchValue = '';
+  faTimes = faTimes;
 
   ngOnInit(): void {
   }
@@ -86,7 +93,9 @@ export class ListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.paginator.page.subscribe((event: any) => {
         this.loading = true;
-        if (this.currentState === 'cat') {
+        if (this.searchValue) {
+          this.doSearch(this.searchValue, event.pageSize, this.lowValue);
+        } else if (this.currentState === 'cat') {
           this.doGetProductList({cat: this.param}, event.pageSize, this.lowValue);
         } else if (this.currentState === 'subcat') {
           this.doGetProductList({subcat: this.param}, event.pageSize, this.lowValue);
@@ -181,4 +190,21 @@ export class ListComponent implements OnInit, AfterViewInit {
     }
   }
 
+  resetSearchValue(): void {
+    this.searchValue = '';
+    this.doGetProductList({}, this.limit, this.offset);
+  }
+
+  doSearch(query: string, limit: number, offset: number): void {
+    if (query) {
+      this.apiService.doSearchProduct(query, limit, offset).subscribe((res: any) => {
+        this.products = res.results;
+        for (const product of this.products) {
+          product.amount = 1;
+        }
+        this.productsCount = res.count;
+        this.loading = false;
+      });
+    }
+  }
 }

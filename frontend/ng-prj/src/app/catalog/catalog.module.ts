@@ -16,12 +16,15 @@ import {NgbRatingModule} from '@ng-bootstrap/ng-bootstrap';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {CrystalLightboxModule} from '@crystalui/angular-lightbox';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatIconModule} from '@angular/material/icon';
 
 const routes: Routes = [
   {path: '', component: ListComponent},
   {path: ':popular', component: ListComponent},
   {path: 'cat/:catId', component: ListComponent},
-  {path: 'subcat/:SubCatId', component: ListComponent},
+  {path: 'subcat/:SubCatId', component: ListComponent}
 ];
 
 @NgModule({
@@ -39,13 +42,17 @@ const routes: Routes = [
     FontAwesomeModule,
     MatButtonToggleModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
     CrystalLightboxModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    FormsModule
   ],
   exports: [
     ListComponent
   ],
   providers: [
-    ApiService,
+    ApiService
   ]
 })
 export class CatalogModule {

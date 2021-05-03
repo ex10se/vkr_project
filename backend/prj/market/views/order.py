@@ -13,7 +13,7 @@ class OrderView(APIView):
     """
     API endpoint для заказов пользователя
     """
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(request_body=OrderRequestSerializer)
     def post(self, request):

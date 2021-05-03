@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {GoogleLoginProvider, SocialAuthService, SocialUser} from 'angularx-social-login';
@@ -16,7 +16,7 @@ import {faBars} from '@fortawesome/free-solid-svg-icons';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   faGoogle = faGoogle;
   faBars = faBars;
 
@@ -56,6 +56,9 @@ export class AppComponent {
 
   private unsubscribe = new Subject();
   logoSrc = 'assets/images/logo.png';
+
+  ngOnInit(): void {
+  }
 
   signInWithGoogle(): void {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(res => {

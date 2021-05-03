@@ -1,16 +1,18 @@
-from rest_framework.generics import ListAPIView
+from rest_framework import viewsets, mixins
 
 from market.models import Category
 from market.serializers.category import CategorySerializer
 
 
-class CategoryListView(ListAPIView):
+class CategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     """
-        API endpoint, позволяющий получать список категорий
-    """
+    API endpoint, позволяющий получать список категорий
 
+    GET /category_list
+    """
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = None
 
-    def get_queryset(self):
-        return Category.objects.all().order_by('-id').prefetch_related('subcategory_set')
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

@@ -13,7 +13,8 @@ export class ListComponent implements OnInit {
   isAuth = false;
   userId = 0;
   orders: any = [];
-  displayedColumns: string[] = ['position', 'name', 'amount', 'price', 'price_multiple', 'category', 'subcategory'];
+  displayedColumns: string[] = ['position', 'name', 'amount', 'price', 'price_multiple', 'category', 'subcategory', 'user_rating'];
+  rating = 0;
 
   constructor(private apiService: ApiService,
               private loginService: LoginService) {
@@ -24,6 +25,7 @@ export class ListComponent implements OnInit {
           this.userId = data.user.id;
           this.apiService.getOrderList(this.userId).subscribe((rez: any) => {
             this.orders = rez;
+            console.log(rez);
             this.orders.sort((a: any, b: any) => b.updated_at.localeCompare(a.updated_at));
             this.loading = false;
           });
@@ -36,4 +38,9 @@ export class ListComponent implements OnInit {
     this.loading = true;
   }
 
+  doSetProductRating(user: number, product: number, rating: number): void {
+    this.apiService.setProductRating(user, product, rating).subscribe(() => {
+      this.rating = rating;
+    });
+  }
 }

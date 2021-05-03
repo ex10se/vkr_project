@@ -1,7 +1,7 @@
 runtime: python39
 
 env_variables:
-  DJANGO_DEBUG: 0
+  DEBUG: 0
 
 handlers:
 - url: /static

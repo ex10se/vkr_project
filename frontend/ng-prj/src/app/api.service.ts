@@ -25,9 +25,14 @@ export class ApiService {
       `?limit=${limit}&offset=${offset}`);
   }
 
-    getPopularProductList(limit: number, offset: number): Observable<object> {
-      return this.http.get(`${environment.backendUrl}v1/market/popular_products?limit=${limit}&offset=${offset}`);
-    }
+  doSearchProduct(query: string, limit: number, offset: number): Observable<object> {
+    return this.http.get(`${environment.backendUrl}v1/market/product_list?searchkey=${query}` +
+      `&limit=${limit}&offset=${offset}`);
+  }
+
+  getPopularProductList(limit: number, offset: number): Observable<object> {
+    return this.http.get(`${environment.backendUrl}v1/market/popular_products?limit=${limit}&offset=${offset}`);
+  }
 
   getCategoryList(): Observable<object> {
     return this.http.get(`${environment.backendUrl}v1/market/category_list`);
@@ -39,7 +44,7 @@ export class ApiService {
   }
 
   setProductRating(user: number, product: number, rating: number): Observable<object> {
-    return this.http.patch(`${environment.backendUrl}v1/market/user_rating_list`,
+    return this.http.put(`${environment.backendUrl}v1/market/user_rating_list`,
       {user, product, rating});
   }
 
@@ -56,7 +61,7 @@ export class ApiService {
   }
 
   changeUserProfile(user: number, firstName: string, phone: string, address: string): Observable<object> {
-    return this.http.patch(`${environment.backendUrl}v1/market/user_profile`,
+    return this.http.put(`${environment.backendUrl}v1/market/user_profile`,
       {user, firstName, phone, address});
   }
 
@@ -68,7 +73,7 @@ export class ApiService {
     return this.http.post(`${environment.backendUrl}v1/market/order_list`, {consumer: user});
   }
 
-  // notifyList(): Observable<object> {
-  //   return this.http.get(`${environment.backendUrl}v1/market/notification_list`);
-  // }
+  getPredictions(): Observable<any> {
+    return this.http.get(`${environment.backendUrl}v1/market/predictions`);
+  }
 }

@@ -12,10 +12,10 @@ class UserProfileView(APIView):
     """
     API endpoint для редактирования профиля пользователя
     """
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(request_body=UserProfileSerializer)
-    def patch(self, request):
+    def put(self, request):
         try:
             user = UserProfile.objects.get(user_ptr_id=request.data['user'])
         except UserProfile.DoesNotExist:

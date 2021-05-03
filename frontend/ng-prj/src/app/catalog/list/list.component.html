@@ -9,7 +9,20 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="!loading">
+  <div *ngIf="!loading" fxFlex="100" fxLayout="column" fxLayoutAlign="start center">
+
+    <div *ngFor="let product of predictedProducts">
+      {{product['name']}}
+    </div>
+
+    <mat-form-field class="search-box">
+      <mat-label>Поиск по каталогу</mat-label>
+      <input type="text" placeholder="Введите название продукта" matInput [(ngModel)]="searchValue" (focusout)="doSearch(searchValue, this.limit, this.offset)">
+      <button mat-button *ngIf="searchValue" matSuffix mat-icon-button (click)="resetSearchValue()">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
+    </mat-form-field>
+
     <div class="products" fxFlex="70" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
       <mat-card class="product-card" *ngFor="let product of products"
                 fxFlex="300px" fxLayout="column wrap" fxLayoutAlign="center">
@@ -85,7 +98,7 @@
       <div></div>
     </div>
 
-  </ng-container>
+  </div>
 
   <div fxFlex="100" fxLayoutAlign="end center" style="margin-top: 10px">
     <button mat-raised-button (click)="scrollToTop()" color="warn">Наверх</button>

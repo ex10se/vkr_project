@@ -141,23 +141,6 @@ button.mat-stroked-button.price {
   margin: 0 !important;
 }
 
-.star-background {
-  font-size: 1.2rem;
-  position: relative;
-  display: inline-block;
-  color: #b0c4de;
-}
-
-.star-background .full, .star-foreground {
-  position: absolute;
-  display: inline-block;
-  overflow: hidden;
-  color: #1e90ff;
-}
-.read .star-background {
-  //font-size: 1.1em;
-}
-
-.star-read {
-  color: #b01c1c;
+.search-box {
+  width: 20%;
 }

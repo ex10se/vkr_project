@@ -9,9 +9,9 @@ from market.serializers.google_auth import GoogleAuthRequestSerializer
 from market.serializers.user_profile import UserProfileSerializer
 
 
-class GoogleView(APIView):
+class GoogleAuthView(APIView):
     """
-    Авторизация через гугл.
+    Авторизация через гугл
     """
     permission_classes = (AllowAny,)
 
@@ -21,10 +21,9 @@ class GoogleView(APIView):
             user = UserProfile.objects.get(username=request.data['email'])
             token = Token.objects.get(user=user)
         except UserProfile.DoesNotExist:
-            user = UserProfile()
-            user.name = request.data['firstName']
-            user.username = request.data['email']
-            user.is_active = True
+            user = UserProfile.objects.create(name=request.data['firstName'],
+                                              username=request.data['email'],
+                                              is_active=True)
             user.set_password(None)
             user.save()
             token = Token.objects.create(user=user)

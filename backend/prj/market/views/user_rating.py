@@ -1,6 +1,6 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,7 +12,7 @@ class UserRatingView(APIView):
     """
     API endpoint для пользовательских оценок продуктов
     """
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(request_body=UserRatingPartialSerializer)
     def post(self, request):
@@ -23,7 +23,7 @@ class UserRatingView(APIView):
         return Response(user_rating)
 
     @swagger_auto_schema(request_body=UserRatingSerializer)
-    def patch(self, request):
+    def put(self, request):
         user_rating = UserRating.objects.get_or_create(user_id=request.data['user'],
                                                        product_id=request.data['product'])[0]
         user_rating.rating = request.data['rating']
