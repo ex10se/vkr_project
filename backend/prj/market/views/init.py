@@ -12,6 +12,8 @@ from market.serializers.user_profile import UserProfileSerializer
 class InitView(APIView):
     """
     Проверка на авторизованность
+
+    GET /init
     """
     permission_classes = (IsAuthenticated,)
 

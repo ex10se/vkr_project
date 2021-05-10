@@ -11,6 +11,9 @@ from market.serializers.user_rating import UserRatingSerializer, UserRatingParti
 class UserRatingView(APIView):
     """
     API endpoint для пользовательских оценок продуктов
+
+    POST /user_rating_list
+    PUT /user_rating_list
     """
     permission_classes = [IsAuthenticated]
 

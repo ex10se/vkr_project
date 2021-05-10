@@ -12,6 +12,8 @@ from market.serializers.user_profile import UserProfileSerializer
 class GoogleAuthView(APIView):
     """
     Авторизация через гугл
+
+    POST /google_auth
     """
     permission_classes = (AllowAny,)
 

@@ -1,5 +1,5 @@
+from math import prod
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import signals, Avg
@@ -8,68 +8,66 @@ from django.utils.safestring import mark_safe
 
 
 class UserProfile(User):
-    phone = models.CharField(max_length=20)
-    address = models.TextField(null=True, blank=True, default='')
+    phone = models.CharField('Телефон', max_length=20)
+    address = models.TextField('Адрес', null=True, blank=True)
 
     def __str__(self):
         return self.username
 
-    @property
-    def purchased_products(self):
-        op = OrderProduct.objects.filter(order__consumer=1239).values_list('product', flat=True).distinct()
-        return Product.objects.filter(id__in=op)
-
     class Meta:
-        verbose_name = 'UserProfile'
-        verbose_name_plural = 'UserProfiles'
+        verbose_name = 'профиль клиента'
+        verbose_name_plural = 'профили клиентов'
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=250, default='', unique=True)
-    image = models.ImageField(upload_to='category', null=True, blank=True)
+    name = models.CharField('Название', max_length=250, unique=True)
+    image = models.ImageField('Изображение', upload_to='category', null=True, blank=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = 'category'
-        verbose_name_plural = 'categories'
+        verbose_name = 'категория'
+        verbose_name_plural = 'категории'
 
     @property
     def image_tag(self):
-        # проверка существования image.url, оборачивание его в тег (для админки)
-        try:
-            return mark_safe(
-                f'<img src="{self.image.url}" style="width: 100px; height: 100px; object-fit: cover;">')
-        except ValueError:
-            return None
+        return mark_safe(f'<img src="{self.image.url}" style="width: 100px; height: 100px; object-fit: cover;">')
 
     @property
     def subcategories(self):
         return self.subcategory_set.values()
 
+    image_tag.fget.short_description = 'Изображение'
+
 
 class Subcategory(models.Model):
-    name = models.CharField(max_length=250, default='', unique=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField('Название', max_length=250, unique=True)
+    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = 'subcategory'
-        verbose_name_plural = 'subcategories'
+        verbose_name = 'подкатегория'
+        verbose_name_plural = 'подкатегории'
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=250, default='', unique=True)
-    image = models.ImageField(upload_to='product', null=True, blank=True)
-    subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True, blank=True)
-    price = models.IntegerField()
-    common_rating = models.DecimalField(max_digits=2, decimal_places=1, default=0, null=True)  # общий рейтинг
+    name = models.CharField('Название', max_length=250, unique=True)
+    image = models.ImageField('Изображение', upload_to='product', null=True, blank=True)
+    subcategory = models.ForeignKey(Subcategory, verbose_name='Подкатегория',
+                                    on_delete=models.SET_NULL, null=True, blank=True)
+    price = models.IntegerField('Цена')
+    common_rating = models.IntegerField('Общий рейтинг', default=0, null=True)  # общий рейтинг
 
     def __str__(self):
         return f'{self.name} ({self.price} ₽)'
+
+    class Meta:
+        verbose_name = 'продукт'
+        verbose_name_plural = 'продукты'
+        ordering = ('id',)
 
     @property
     def category(self):
@@ -79,30 +77,26 @@ class Product(models.Model):
     def image_tag(self):
         return mark_safe(f'<img src="{self.image.url}" style="width: 100px; height: 100px; object-fit: cover;">')
 
-    class Meta:
-        verbose_name = 'product'
-        verbose_name_plural = 'products'
-        ordering = ('id',)
+    category.fget.short_description = 'Категория'
+    image_tag.fget.short_description = 'Изображение'
 
 
-# не получилось вытащить в отдельный файл signals
-# расчет общего (среднего) рейтинга продукта при сохранении объекта модели Product
+# расчет общего (среднего) рейтинга продукта при сохранении объекта класса Product
 @receiver(signals.pre_save, sender=Product)
 def calc_rating(sender, instance, **kwargs):  # noqa
     avg_rating = UserRating.objects.filter(product=instance.id).aggregate(Avg('rating'))['rating__avg']
-    instance.common_rating = avg_rating if avg_rating else 0
+    instance.common_rating = avg_rating or 0
 
 
 class UserRating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    rating = models.DecimalField(max_digits=2, decimal_places=1, default=0,
-                                 validators=[MinValueValidator(0), MaxValueValidator(5)])  # рейтинг пользователя
+    user = models.ForeignKey(User, verbose_name='Клиент', on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, verbose_name='Продукт', on_delete=models.CASCADE, null=True, blank=True)
+    rating = models.IntegerField('Рейтинг', default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
 
     class Meta:
-        verbose_name = 'UserRating'
-        verbose_name_plural = 'UserRatings'
-        unique_together = ('user', 'product')  # не дает пользователю оценивать один и тот же продукт многократно
+        verbose_name = 'пользовательский рейтинг'
+        verbose_name_plural = 'пользовательские рейтинги'
+        unique_together = ('user', 'product')
 
 
 class Order(models.Model):
@@ -113,28 +107,30 @@ class Order(models.Model):
         ('canceled', 'Отмененный заказ'),
     )
 
-    consumer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=20, choices=STATUS, default='new')
+    consumer = models.ForeignKey(UserProfile, verbose_name='Клиент', on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField('Создан', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлён', auto_now=True)
+    status = models.CharField('Статус', max_length=20, choices=STATUS, default='new')
 
     class Meta:
-        verbose_name = 'order'
-        verbose_name_plural = 'orders'
+        verbose_name = 'заказ'
+        verbose_name_plural = 'заказы'
 
     @property
     def total_price(self):
-        return sum(product.price_multiple for product in OrderProduct.objects.filter(order=self))
+        return sum([prod(i) for i in self.orderproduct_set.values_list('product__price', 'amount')])
+
+    total_price.fget.short_description = 'Общая цена'
 
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    amount = models.PositiveIntegerField(default=1)
+    amount = models.PositiveIntegerField('Количество', default=1)
 
     class Meta:
-        verbose_name = 'order product'
-        verbose_name_plural = 'order products'
+        verbose_name = 'продукт в заказе'
+        verbose_name_plural = 'продукты в заказе'
 
     @property
     def price_multiple(self):
@@ -147,3 +143,13 @@ class OrderProduct(models.Model):
     @property
     def user_rating(self):
         return UserRating.objects.get_or_create(user=self.consumer, product=self.product)[0].rating
+
+
+class Recommendation(models.Model):
+    user_id = models.IntegerField('id пользователя')
+    item_id = models.IntegerField('id продукта')
+    created_at = models.DateField('Дата получения рекомендации', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'рекомендация'
+        verbose_name_plural = 'рекомендации'

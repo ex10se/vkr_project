@@ -1,6 +1,4 @@
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,6 +10,8 @@ from market.serializers.order import OrderSerializer, OrderRequestSerializer
 class OrderView(APIView):
     """
     API endpoint для заказов пользователя
+
+    POST /order_list
     """
     permission_classes = (IsAuthenticated,)
 

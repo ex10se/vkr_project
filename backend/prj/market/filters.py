@@ -1,28 +1,30 @@
 from django.contrib.admin import SimpleListFilter
 from django_filters import FilterSet, NumberFilter, CharFilter
 
-from market.models import Product, Order
+from market.models import Product
 
 
 class ProductFilter(FilterSet):
-    category = NumberFilter(label='Category', field_name='subcategory__category')
-    subcategory = NumberFilter()
-    searchkey = CharFilter(field_name='name', lookup_expr='icontains')
+    category = NumberFilter(label='Категория', field_name='subcategory__category')
+    subcategory = NumberFilter(label='Подкатегория')
+    searchkey = CharFilter(label='Название', field_name='name', lookup_expr='icontains')
 
     class Meta:
         model = Product
         fields = ('searchkey', 'subcategory')
 
 
-RATING_LOOKUPS = (('score >= 4.5', 'Excellent'),
-                  ('4.5 > score >= 3.8', 'Good'),
-                  ('3.8 > score >= 2.5', 'Satisfactory'),
-                  ('2.5 > score > 0', 'Poor'),
-                  ('score = 0', 'Not rated'))
+RATING_LOOKUPS = (
+    ('score >= 4.5', 'Отлично'),
+    ('4.5 > score >= 3.8', 'Хорошо'),
+    ('3.8 > score >= 2.5', 'Приемлемо'),
+    ('2.5 > score > 0', 'Так себе'),
+    ('score = 0', 'Без оценки')
+)
 
 
 class RatingListFilter(SimpleListFilter):
-    title = 'rating'
+    title = 'Рейтинг'
     parameter_name = 'rating'
 
     def lookups(self, request, model_admin):
@@ -42,7 +44,7 @@ class RatingListFilter(SimpleListFilter):
 
 
 class CommonRatingListFilter(SimpleListFilter):
-    title = 'common rating'
+    title = 'Общий рейтинг'
     parameter_name = 'common_rating'
 
     def lookups(self, request, model_admin):

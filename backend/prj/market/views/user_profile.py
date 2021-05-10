@@ -11,6 +11,8 @@ from market.serializers.user_profile import UserProfileSerializer
 class UserProfileView(APIView):
     """
     API endpoint для редактирования профиля пользователя
+
+    PUT /user_profile
     """
     permission_classes = [IsAuthenticated]
 

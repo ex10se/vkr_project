@@ -6,7 +6,7 @@ from .filters import RatingListFilter, CommonRatingListFilter
 
 @admin.register(models.UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('username', 'get_full_name', 'phone')
+    list_display = ('username', 'first_name', 'phone', 'address')
     exclude = ('last_login', 'password', 'email', 'is_superuser',
                'groups', 'user_permissions', 'is_staff', 'date_joined')
     search_fields = ('username', 'phone', 'first_name', 'last_name')
@@ -50,3 +50,9 @@ class OrderProductAdmin(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     inlines = (OrderProductAdmin,)
     list_display = ('id', 'consumer', 'created_at', 'total_price')
+    search_fields = ('id', 'consumer')
+
+
+@admin.register(models.Recommendation)
+class RecommendationAdmin(admin.ModelAdmin):
+    pass

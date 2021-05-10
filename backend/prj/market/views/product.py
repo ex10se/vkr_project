@@ -8,9 +8,10 @@ from market.serializers.product import ProductSerializer
 
 class ProductListView(ListModelMixin, GenericAPIView):
     """
-        API endpoint для списка продуктов
-    """
+    API endpoint для списка продуктов
 
+    GET /product_list
+    """
     queryset = Product.objects.all().prefetch_related('subcategory')
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
@@ -21,9 +22,10 @@ class ProductListView(ListModelMixin, GenericAPIView):
 
 class PopularProductListView(ListModelMixin, GenericAPIView):
     """
-        API endpoint для списка самых популярных продуктов
-    """
+    API endpoint для списка самых популярных продуктов
 
+    GET /popular_products
+    """
     queryset = Product.objects.filter(id__in=OrderProduct.objects.all().values_list('product_id', flat=True))
     serializer_class = ProductSerializer
     filterset_class = ProductFilter

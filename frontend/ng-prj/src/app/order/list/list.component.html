@@ -33,7 +33,7 @@
 
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef> Название</th>
-              <td mat-cell *matCellDef="let product" [width]="300"> {{product['product']['name']}} </td>
+              <td mat-cell *matCellDef="let product" [width]="320"> {{product['product']['name']}} </td>
               <td mat-footer-cell *matFooterCellDef> Всего</td>
             </ng-container>
 
@@ -57,13 +57,13 @@
 
             <ng-container matColumnDef="category">
               <th mat-header-cell *matHeaderCellDef> Категория</th>
-              <td mat-cell *matCellDef="let product" [width]="150"> {{product['product']['category']['name']}}  </td>
+              <td mat-cell *matCellDef="let product" [width]="170"> {{product['product']['category']['name']}}  </td>
               <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <ng-container matColumnDef="subcategory">
               <th mat-header-cell *matHeaderCellDef> Подкатегория</th>
-              <td mat-cell *matCellDef="let product" [width]="150"> {{product['product']['subcategory']['name']}}  </td>
+              <td mat-cell *matCellDef="let product" [width]="170"> {{product['product']['subcategory']['name']}}  </td>
               <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
