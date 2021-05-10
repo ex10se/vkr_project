@@ -13,7 +13,7 @@ class OrderView(APIView):
 
     POST /order_list
     """
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(request_body=OrderRequestSerializer)
     def post(self, request):

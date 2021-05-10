@@ -6,8 +6,7 @@ from market.views.category import CategoryViewSet
 from market.views.google_auth import GoogleAuthView
 from market.views.init import InitView
 from market.views.order import OrderView
-from market.views.product import ProductListView, PopularProductListView
-from market.views.recommender import RecommenderListView
+from market.views.product import ProductListView, PopularProductListView, RecommendedProductsListView
 from market.views.user_profile import UserProfileView
 from market.views.user_rating import UserRatingView
 
@@ -24,7 +23,7 @@ urlpatterns = [
     path('google_auth', GoogleAuthView.as_view()),
     path('init', InitView.as_view()),
     path('basket_submit', BasketSubmitView.as_view()),
-    path('predictions', RecommenderListView.as_view()),
+    path('recommended_products', RecommendedProductsListView.as_view()),
 ]
 
 urlpatterns += router.urls

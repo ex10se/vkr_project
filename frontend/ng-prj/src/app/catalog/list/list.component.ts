@@ -32,10 +32,19 @@ export class ListComponent implements OnInit, AfterViewInit {
         this.doGetProductList({subcat: params.SubCatId}, this.limit, this.offset);
         this.currentState = 'subcat';
         this.param = params.SubCatId;
-      } else if (params.hasOwnProperty('popular')) {
-        this.doGetPopularProductList(this.limit, this.offset);
-        this.currentState = 'popular';
-        this.param = '';
+      }
+    });
+    this.route.url.subscribe(url => {
+      if (url[0]) {
+        if (url[0].path === 'popular') {
+          this.doGetPopularProductList(this.limit, this.offset);
+          this.currentState = 'popular';
+          this.param = '';
+        } else if (url[0].path === 'recommended') {
+          this.doGetRecommendedProductList(this.limit, this.offset);
+          this.currentState = 'recommended';
+          this.param = '';
+        }
       } else {
         this.doGetProductList({}, this.limit, this.offset);
         this.currentState = 'all';
@@ -57,10 +66,6 @@ export class ListComponent implements OnInit, AfterViewInit {
     this.basketService.basket$.subscribe(data => {
       this.basket = data;
     });
-    this.apiService.getPredictions().subscribe((res: any) => {
-      this.predictedProducts = res.results;
-      console.log(this.predictedProducts);
-    });
   }
 
   loading = true;
@@ -72,7 +77,6 @@ export class ListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator | any;
   pageEvent?: PageEvent;
   products: Array<any> = [];
-  predictedProducts: Array<any> = [];
   productsCount?: number;
   limit = 24;
   offset = 0;
@@ -101,7 +105,9 @@ export class ListComponent implements OnInit, AfterViewInit {
           this.doGetProductList({subcat: this.param}, event.pageSize, this.lowValue);
         } else if (this.currentState === 'popular') {
           this.doGetPopularProductList(event.pageSize, this.lowValue);
-        } else {
+        } else if (this.currentState === 'recommended') {
+          this.doGetRecommendedProductList(event.pageSize, this.lowValue);
+        } else if (this.currentState === 'all') {
           this.doGetProductList({}, event.pageSize, this.lowValue);
         }
       }
@@ -131,6 +137,18 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   doGetPopularProductList(limit: number, offset: number): void {
     this.apiService.getPopularProductList(limit, offset).subscribe((res: any) => {
+      this.products = res.results;
+      for (const product of this.products) {
+        product.amount = 1;
+      }
+      this.productsCount = res.count;
+      this.loading = false;
+    });
+  }
+
+  doGetRecommendedProductList(limit: number, offset: number): void {
+    this.apiService.getRecommendedProductList(limit, offset).subscribe((res: any) => {
+      console.log(res);
       this.products = res.results;
       for (const product of this.products) {
         product.amount = 1;

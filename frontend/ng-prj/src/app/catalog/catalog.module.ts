@@ -22,7 +22,8 @@ import {MatIconModule} from '@angular/material/icon';
 
 const routes: Routes = [
   {path: '', component: ListComponent},
-  {path: ':popular', component: ListComponent},
+  {path: 'popular', component: ListComponent},
+  {path: 'recommended', component: ListComponent},
   {path: 'cat/:catId', component: ListComponent},
   {path: 'subcat/:SubCatId', component: ListComponent}
 ];

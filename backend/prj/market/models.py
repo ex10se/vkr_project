@@ -153,3 +153,4 @@ class Recommendation(models.Model):
     class Meta:
         verbose_name = 'рекомендация'
         verbose_name_plural = 'рекомендации'
+        unique_together = ('user_id', 'item_id')

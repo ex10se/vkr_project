@@ -34,6 +34,10 @@ export class ApiService {
     return this.http.get(`${environment.backendUrl}v1/market/popular_products?limit=${limit}&offset=${offset}`);
   }
 
+  getRecommendedProductList(limit: number, offset: number): Observable<object> {
+    return this.http.get(`${environment.backendUrl}v1/market/recommended_products?limit=${limit}&offset=${offset}`);
+  }
+
   getCategoryList(): Observable<object> {
     return this.http.get(`${environment.backendUrl}v1/market/category_list`);
   }
@@ -71,9 +75,5 @@ export class ApiService {
 
   getOrderList(user: any): Observable<object> {
     return this.http.post(`${environment.backendUrl}v1/market/order_list`, {consumer: user});
-  }
-
-  getPredictions(): Observable<any> {
-    return this.http.get(`${environment.backendUrl}v1/market/predictions`);
   }
 }

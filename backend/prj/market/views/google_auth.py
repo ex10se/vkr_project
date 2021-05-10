@@ -15,7 +15,7 @@ class GoogleAuthView(APIView):
 
     POST /google_auth
     """
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(request_body=GoogleAuthRequestSerializer)
     def post(self, request):

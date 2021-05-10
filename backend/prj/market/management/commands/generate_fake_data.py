@@ -26,13 +26,14 @@ class Command(BaseCommand):
             OrderProduct.objects.all().delete()
             UserRating.objects.all().delete()
             Product.objects.all().update(common_rating=0)
+            Recommendation.objects.all().delete()
 
         self.generate_users()
         self.generate_orders()
         self.generate_ratings()
 
     def generate_users(self):
-        n = 20
+        n = 100
         with transaction.atomic():
             for i in range(n):
                 username = self.random_username()
@@ -46,7 +47,7 @@ class Command(BaseCommand):
         print(f'{n} users were created')
 
     def generate_orders(self):
-        n = 200
+        n = 500
         with transaction.atomic():
             for i in range(n):
                 consumer = self.random_client()

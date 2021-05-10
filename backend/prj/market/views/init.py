@@ -15,7 +15,7 @@ class InitView(APIView):
 
     GET /init
     """
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(responses={status.HTTP_200_OK: InitSerializer()})
     def get(self, request):

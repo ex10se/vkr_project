@@ -10,6 +10,9 @@
       </button>
 
       <mat-button-toggle-group class="catalog">
+        <mat-button-toggle *ngIf="isAuth" [routerLink]="'catalog/recommended'" style="background-color: #9a5276">
+          Подборка для Вас
+        </mat-button-toggle>
         <mat-button-toggle [routerLink]="'catalog/popular'">
           Популярное
         </mat-button-toggle>

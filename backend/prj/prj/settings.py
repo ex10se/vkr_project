@@ -17,8 +17,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'rest_framework',
     'drf_yasg',
-    'channels',
     'corsheaders',
     'rest_framework.authtoken',
     'webpack_loader',
@@ -138,12 +138,6 @@ REST_FRAMEWORK = {
 
 # django-cors-headers
 CORS_ALLOW_ALL_ORIGINS = True
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
 
 WEBPACK_LOADER = {
     'DEFAULT': {

@@ -30,22 +30,26 @@ def pick_best_params(data: DatasetAutoFolds, algo=KNNWithMeans) -> dict:
     return gs.best_params["rmse"]
 
 
-def get_predictions_list(user_id: int = None):
+def get_predictions_list(user_id: int = None) -> list:
     """
     Возвращает список рекомендуемых продуктов. Если не задан user_id, возвращает расчет для каждого пользователя
     :param user_id: id пользователя
-    :return: словарь с id продуктов и пользователя (-ей)
+    :return: список словарей с id продуктов и пользователя (-ей)
     """
+    if not OrderProduct.objects.count():
+        return []
     df = pd.DataFrame(OrderProduct.objects.annotate(
         user=F('order__consumer'), item=F('product'),
         rating=F('product__userrating__rating')).values('user', 'item', 'rating'))
     reader = Reader(rating_scale=(0, 5))
     data = Dataset.load_from_df(df[['user', 'item', 'rating']], reader)
     algo = KNNWithMeans(sim_options=pick_best_params(data))
-
     trainset, testset = train_test_split(data, test_size=.25)
     predictions = algo.fit(trainset).test(testset)
-
+    # убрать невозможные предсказания
+    predictions = [pred for pred in predictions if not pred[4]['was_impossible']]
+    if not predictions:
+        return []
     if user_id:
         return [{'user': user_id, 'item': pred[1]} for i, pred
                 in enumerate(sorted(predictions, key=lambda x: x[2], reverse=True)) if predictions[i][0] == user_id]
@@ -54,15 +58,13 @@ def get_predictions_list(user_id: int = None):
                 in enumerate(sorted(predictions, key=lambda x: x[2], reverse=True))]
 
 
-def fill_recommendations(data: list, clear=False):
+def fill_recommendations(data: list, clear=False) -> None:
     """
     Заполняет таблицу рекомендаций
     :param clear: предварительно очистить таблицу
     :param data: список словарей с ключами user и item, id в качестве значений
     """
-    recommendations = []
-    for n in data:
-        recommendations.append(Recommendation(user_id=n['user'], item_id=n['item']))
     if clear:
         Recommendation.objects.all().delete()
-    Recommendation.objects.bulk_create(recommendations)
+    for n in data:
+        Recommendation.objects.get_or_create(user_id=n['user'], item_id=n['item'])
