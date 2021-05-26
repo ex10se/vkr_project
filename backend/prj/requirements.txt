@@ -13,6 +13,7 @@ bleach==3.3.0
 cachetools==4.2.2
 certifi==2020.12.5
 cffi==1.14.5
+channels==3.0.3
 chardet==4.0.0
 click==7.1.2
 click-didyoumean==0.0.3
@@ -53,7 +54,6 @@ gunicorn==20.0.4
 httplib2==0.19.1
 hyperlink==21.0.0
 idna==2.10
-implicit==0.4.4
 incremental==21.3.0
 inflection==0.5.1
 iniconfig==1.1.1
@@ -64,7 +64,6 @@ joblib==1.0.1
 jsonschema==3.2.0
 MarkupSafe==1.1.1
 mistune==0.8.4
-names-dataset==2.0.1
 nest-asyncio==1.5.1
 numpy==1.20.2
 oauthlib==3.1.0
@@ -75,7 +74,6 @@ parso==0.8.2
 pbr==5.6.0
 pickleshare==0.7.5
 Pillow==8.1.2
-pip==21.1.1
 pipreqs==0.4.10
 pluggy==0.13.1
 positional==1.2.1
@@ -106,7 +104,6 @@ scikit-surprise==1.1.1
 scipy==1.6.3
 Send2Trash==1.5.0
 service-identity==18.1.0
-setuptools==56.0.0
 six==1.15.0
 sqlparse==0.4.1
 tenacity==7.0.0
@@ -123,7 +120,6 @@ vine==5.0.0
 virtualenv==20.4.4
 wcwidth==0.2.5
 webencodings==0.5.1
-wheel==0.36.2
 wrapt==1.12.1
 yarg==0.1.9
 zope.interface==5.2.0

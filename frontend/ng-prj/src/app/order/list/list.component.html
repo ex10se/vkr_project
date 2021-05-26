@@ -21,7 +21,7 @@
             <ng-container matColumnDef="disclaimer">
               <th mat-header-cell *matHeaderCellDef colspan="100%" class="order-info">
                 №{{order['id']}} / создан: {{order['created_at']|date:'dd.MM.yy в HH:mm zz'}} /
-                статус: {{order['status']}}
+                статус: {{order['get_status_display']}}
               </th>
             </ng-container>
 

@@ -3,9 +3,9 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 
-from common.predictions import fill_recommendations, get_predictions_list
 from market.filters import ProductFilter
 from market.models import Product, OrderProduct, Recommendation
+from market.predictions import fill_recommendations, get_predictions_list
 from market.serializers.product import ProductSerializer
 
 

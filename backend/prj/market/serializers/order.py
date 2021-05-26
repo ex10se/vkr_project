@@ -24,7 +24,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('id', 'consumer', 'created_at', 'updated_at', 'status', 'products', 'total_price')
+        fields = ('id', 'consumer', 'created_at', 'updated_at', 'status',
+                  'get_status_display', 'products', 'total_price')
 
 
 class OrderRequestSerializer(serializers.Serializer):

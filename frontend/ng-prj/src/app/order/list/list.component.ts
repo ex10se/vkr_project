@@ -25,7 +25,6 @@ export class ListComponent implements OnInit {
           this.userId = data.user.id;
           this.apiService.getOrderList(this.userId).subscribe((rez: any) => {
             this.orders = rez;
-            console.log(rez);
             this.orders.sort((a: any, b: any) => b.updated_at.localeCompare(a.updated_at));
             this.loading = false;
           });

@@ -14,14 +14,14 @@
     <mat-form-field class="search-box">
       <mat-label>Поиск по каталогу</mat-label>
       <input type="text" placeholder="Введите название продукта" matInput [(ngModel)]="searchValue"
-             (focusout)="doSearch(searchValue, this.limit, this.offset)">
+             (change)="doSearch(searchValue, this.limit, this.offset)">
       <button mat-button *ngIf="searchValue" matSuffix mat-icon-button (click)="resetSearchValue()">
         <fa-icon [icon]="faTimes"></fa-icon>
       </button>
     </mat-form-field>
 
     <div class="products" fxFlex="70" fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
-      <h1 *ngIf="!products.length">Здесь пока ничего нет, приходите позже</h1>
+      <h1 *ngIf="!products.length">Здесь пока ничего нет, приходите позже :)</h1>
       <mat-card class="product-card" *ngFor="let product of products"
                 fxFlex="300px" fxLayout="column wrap" fxLayoutAlign="center">
         <mat-card-header>

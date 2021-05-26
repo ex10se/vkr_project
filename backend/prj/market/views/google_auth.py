@@ -23,7 +23,7 @@ class GoogleAuthView(APIView):
             user = UserProfile.objects.get(username=request.data['email'])
             token = Token.objects.get(user=user)
         except UserProfile.DoesNotExist:
-            user = UserProfile.objects.create(name=request.data['firstName'],
+            user = UserProfile.objects.create(first_name=request.data['firstName'],
                                               username=request.data['email'],
                                               is_active=True)
             user.set_password(None)

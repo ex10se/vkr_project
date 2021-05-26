@@ -148,7 +148,6 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   doGetRecommendedProductList(limit: number, offset: number): void {
     this.apiService.getRecommendedProductList(limit, offset).subscribe((res: any) => {
-      console.log(res);
       this.products = res.results;
       for (const product of this.products) {
         product.amount = 1;

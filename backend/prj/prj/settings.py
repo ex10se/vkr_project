@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from google.oauth2 import service_account
-from prj.secrets.secrets import DJANGO_SECRET_KEY, DB_PASSWORD
+from prj.secrets.secrets import DJANGO_SECRET_KEY, DB_PASSWORD, DB_HOST
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = DJANGO_SECRET_KEY
@@ -19,6 +19,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'rest_framework',
     'drf_yasg',
+    'channels',
     'corsheaders',
     'rest_framework.authtoken',
     'webpack_loader',
@@ -57,46 +58,15 @@ TEMPLATES = (
 WSGI_APPLICATION = 'prj.wsgi.application'
 ASGI_APPLICATION = 'prj.asgi.application'
 
-# Local database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# [START db_setup]
-if os.getenv('GAE_APPLICATION', None):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'HOST': '/cloudsql/recme-310114:europe-north1:recmedb',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': DB_PASSWORD,
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': DB_HOST,
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': DB_PASSWORD,
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'HOST': '127.0.0.1',
-            'PORT': '5678',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': DB_PASSWORD,
-        }
-    }
-# [END db_setup]
-
-# Use a in-memory sqlite3 database when testing in CI systems
-if os.getenv('TRAMPOLINE_CI', None):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = (
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -110,11 +80,6 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-# STATICFILES_FINDERS = [
-#     'django.contrib.staticfiles.finders.FileSystemFinder',  # searches in STATICFILES_DIRS
-#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',  # searches in STATIC subfolder of each app
-# ]
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
@@ -139,6 +104,12 @@ REST_FRAMEWORK = {
 # django-cors-headers
 CORS_ALLOW_ALL_ORIGINS = True
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
@@ -152,12 +123,12 @@ WEBPACK_LOADER = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # media files into google cloud storage bucket
-GS_BUCKET_NAME = 'recme-310114.appspot.com'
+GS_BUCKET_NAME = 'recommendme-313210.appspot.com'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 # STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    f"{BASE_DIR}/prj/secrets/recme-310114-b65af041e906.json"
+    f"{BASE_DIR}/prj/secrets/recommendme-313210-021766baa7a9.json"
 )
 
 SITE_ID = 1

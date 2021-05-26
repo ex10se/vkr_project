@@ -8,25 +8,15 @@ import {LoginService} from './login.service';
   providedIn: 'root'
 })
 export class AuthInterceptorService implements HttpInterceptor {
-
-  constructor(private loginService: LoginService) {
-  }
-
-  intercept(req: HttpRequest<any>,
-            next: HttpHandler): Observable<HttpEvent<any>> {
-
+  constructor(private loginService: LoginService) {}
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       const idToken = this.loginService.getToken();
-
       if (idToken) {
           const cloned = req.clone({
               headers: req.headers.set('Authorization',
                   'Token ' + idToken)
           });
           return next.handle(cloned);
-        } else {
-            return next.handle(req.clone());
-        }
-
-
+        } else {return next.handle(req.clone()); }
     }
 }

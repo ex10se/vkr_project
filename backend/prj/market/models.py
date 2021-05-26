@@ -101,10 +101,10 @@ class UserRating(models.Model):
 
 class Order(models.Model):
     STATUS = (
-        ('new', 'Новый заказ'),
-        ('pending', 'Подготовка заказа'),
-        ('finished', 'Завершенный заказ'),
-        ('canceled', 'Отмененный заказ'),
+        ('new', 'Новый'),
+        ('pending', 'Подготовка'),
+        ('finished', 'Завершен'),
+        ('canceled', 'Отменен'),
     )
 
     consumer = models.ForeignKey(UserProfile, verbose_name='Клиент', on_delete=models.CASCADE, null=True, blank=True)
